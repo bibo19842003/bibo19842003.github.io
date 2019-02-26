@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Two on Hello Bibo</title>
-    <link>http://www.example.com/tags/two/</link>
+    <link>https://bibo19842003.github.io/tags/two/</link>
     <description>Recent content in Two on Hello Bibo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-EN</language>
@@ -10,14 +10,14 @@
     <webMaster>bibo19842003@163.com (bibo)</webMaster>
     <copyright>(c) 2019 Bibo.</copyright>
     <lastBuildDate>Tue, 26 Feb 2019 22:00:45 +0800</lastBuildDate>
-    <atom:link href="http://www.example.com/tags/two/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://bibo19842003.github.io/tags/two/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>my third post</title>
-      <link>http://www.example.com/2019/02/26/my-third-post/</link>
+      <link>https://bibo19842003.github.io/2019/02/26/my-third-post/</link>
       <pubDate>Tue, 26 Feb 2019 22:00:45 +0800</pubDate>
       <author>bibo19842003@163.com (bibo)</author>
-      <guid>http://www.example.com/2019/02/26/my-third-post/</guid>
+      <guid>https://bibo19842003.github.io/2019/02/26/my-third-post/</guid>
       <description>&lt;p&gt;你好
 你好
 你好&lt;/p&gt;
@@ -26,10 +26,10 @@
     
     <item>
       <title>my second post</title>
-      <link>http://www.example.com/2019/02/26/my-second-post/</link>
+      <link>https://bibo19842003.github.io/2019/02/26/my-second-post/</link>
       <pubDate>Tue, 26 Feb 2019 21:19:23 +0800</pubDate>
       <author>bibo19842003@163.com (bibo)</author>
-      <guid>http://www.example.com/2019/02/26/my-second-post/</guid>
+      <guid>https://bibo19842003.github.io/2019/02/26/my-second-post/</guid>
       <description>&lt;p&gt;12123&lt;/p&gt;
 
 &lt;p&gt;1
@@ -45,10 +45,10 @@
     
     <item>
       <title>my first post</title>
-      <link>http://www.example.com/2019/02/26/my-first-post/</link>
+      <link>https://bibo19842003.github.io/2019/02/26/my-first-post/</link>
       <pubDate>Tue, 26 Feb 2019 20:18:27 +0800</pubDate>
       <author>bibo19842003@163.com (bibo)</author>
-      <guid>http://www.example.com/2019/02/26/my-first-post/</guid>
+      <guid>https://bibo19842003.github.io/2019/02/26/my-first-post/</guid>
       <description>&lt;p&gt;+++
 hello test1
 +++&lt;/p&gt;
