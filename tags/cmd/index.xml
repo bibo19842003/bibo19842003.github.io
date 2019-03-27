@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cmd on Hello Bibo</title>
+    <link>https://bibo19842003.github.io/tags/cmd/</link>
+    <description>Recent content in Cmd on Hello Bibo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-EN</language>
+    <managingEditor>bibo19842003@163.com (bibo)</managingEditor>
+    <webMaster>bibo19842003@163.com (bibo)</webMaster>
+    <lastBuildDate>Tue, 26 Mar 2019 17:52:03 +0800</lastBuildDate>
+    <atom:link href="https://bibo19842003.github.io/tags/cmd/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>docker cmd</title>
+      <link>https://bibo19842003.github.io/docker/docker-cmd/</link>
+      <pubDate>Tue, 26 Mar 2019 17:52:03 +0800</pubDate>
+      <author>bibo19842003@163.com (bibo)</author>
+      <guid>https://bibo19842003.github.io/docker/docker-cmd/</guid>
+      <description>
+
+&lt;h1 id=&#34;docker-命令查询&#34;&gt;Docker 命令查询&lt;/h1&gt;
+
+&lt;h2 id=&#34;基本语法&#34;&gt;基本语法&lt;/h2&gt;
+
+&lt;p&gt;Docker 命令有两大类，客户端命令和服务端命令。前者是主要的操作接口，后者用来启动 Docker Daemon。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;客户端命令：基本命令格式为 &lt;code&gt;docker [OPTIONS] COMMAND [arg...]&lt;/code&gt;；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;服务端命令：基本命令格式为 &lt;code&gt;dockerd [OPTIONS]&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以通过 &lt;code&gt;man docker&lt;/code&gt; 或 &lt;code&gt;docker help&lt;/code&gt; 来查看这些命令。&lt;/p&gt;
+
+&lt;h2 id=&#34;客户端命令选项&#34;&gt;客户端命令选项&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--config=&amp;quot;&amp;quot;&lt;/code&gt;：指定客户端配置文件，默认为 &lt;code&gt;~/.docker&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-D=true|false&lt;/code&gt;：是否使用 debug 模式。默认不开启；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-H, --host=[]&lt;/code&gt;：指定命令对应 Docker 守护进程的监听接口，可以为 unix 套接字 &lt;code&gt;unix:///path/to/socket&lt;/code&gt;，文件句柄 &lt;code&gt;fd://socketfd&lt;/code&gt; 或 tcp 套接字 &lt;code&gt;tcp://[host[:port]]&lt;/code&gt;，默认为 &lt;code&gt;unix:///var/run/docker.sock&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-l, --log-level=&amp;quot;debug|info|warn|error|fatal&amp;quot;&lt;/code&gt;：指定日志输出级别；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tls=true|false&lt;/code&gt;：是否对 Docker 守护进程启用 TLS 安全机制，默认为否；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscacert=/.docker/ca.pem&lt;/code&gt;：TLS CA 签名的可信证书文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscert=/.docker/cert.pem&lt;/code&gt;：TLS 可信证书文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscert=/.docker/key.pem&lt;/code&gt;：TLS 密钥文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlsverify=true|false&lt;/code&gt;：启用 TLS 校验，默认为否。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;dockerd-命令选项&#34;&gt;dockerd 命令选项&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--api-cors-header=&amp;quot;&amp;quot;&lt;/code&gt;：CORS 头部域，默认不允许 CORS，要允许任意的跨域访问，可以指定为 &amp;laquo;*&amp;laquo;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--authorization-plugin=&amp;quot;&amp;quot;&lt;/code&gt;：载入认证的插件；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-b=&amp;quot;&amp;quot;&lt;/code&gt;：将容器挂载到一个已存在的网桥上。指定为 &lt;code&gt;none&lt;/code&gt; 时则禁用容器的网络，与 &lt;code&gt;--bip&lt;/code&gt; 选项互斥；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--bip=&amp;quot;&amp;quot;&lt;/code&gt;：让动态创建的 &lt;code&gt;docker0&lt;/code&gt; 网桥采用给定的 CIDR 地址; 与 &lt;code&gt;-b&lt;/code&gt; 选项互斥；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--cgroup-parent=&amp;quot;&amp;quot;&lt;/code&gt;：指定 cgroup 的父组，默认 fs cgroup 驱动为 &lt;code&gt;/docker&lt;/code&gt;，systemd cgroup 驱动为 &lt;code&gt;system.slice&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--cluster-store=&amp;quot;&amp;quot;&lt;/code&gt;：构成集群（如 &lt;code&gt;Swarm&lt;/code&gt;）时，集群键值数据库服务地址；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--cluster-advertise=&amp;quot;&amp;quot;&lt;/code&gt;：构成集群时，自身的被访问地址，可以为 &lt;code&gt;host:port&lt;/code&gt; 或 &lt;code&gt;interface:port&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--cluster-store-opt=&amp;quot;&amp;quot;&lt;/code&gt;：构成集群时，键值数据库的配置选项；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--config-file=&amp;quot;/etc/docker/daemon.json&amp;quot;&lt;/code&gt;：daemon 配置文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--containerd=&amp;quot;&amp;quot;&lt;/code&gt;：containerd 文件的路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-D, --debug=true|false&lt;/code&gt;：是否使用 Debug 模式。缺省为 false；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-gateway=&amp;quot;&amp;quot;&lt;/code&gt;：容器的 IPv4 网关地址，必须在网桥的子网段内；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-gateway-v6=&amp;quot;&amp;quot;&lt;/code&gt;：容器的 IPv6 网关地址；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--default-ulimit=[]&lt;/code&gt;：默认的 ulimit 值；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--disable-legacy-registry=true|false&lt;/code&gt;：是否允许访问旧版本的镜像仓库服务器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--dns=&amp;quot;&amp;quot;&lt;/code&gt;：指定容器使用的 DNS 服务器地址；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--dns-opt=&amp;quot;&amp;quot;&lt;/code&gt;：DNS 选项；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--dns-search=[]&lt;/code&gt;：DNS 搜索域；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--exec-opt=[]&lt;/code&gt;：运行时的执行选项；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--exec-root=&amp;quot;&amp;quot;&lt;/code&gt;：容器执行状态文件的根路径，默认为 &lt;code&gt;/var/run/docker&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--fixed-cidr=&amp;quot;&amp;quot;&lt;/code&gt;：限定分配 IPv4 地址范围；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--fixed-cidr-v6=&amp;quot;&amp;quot;&lt;/code&gt;：限定分配 IPv6 地址范围；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-G, --group=&amp;quot;&amp;quot;&lt;/code&gt;：分配给 unix 套接字的组，默认为 &lt;code&gt;docker&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-g, --graph=&amp;quot;&amp;quot;&lt;/code&gt;：Docker 运行时的根路径，默认为 &lt;code&gt;/var/lib/docker&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-H, --host=[]&lt;/code&gt;：指定命令对应 Docker daemon 的监听接口，可以为 unix 套接字 &lt;code&gt;unix:///path/to/socket&lt;/code&gt;，文件句柄 &lt;code&gt;fd://socketfd&lt;/code&gt; 或 tcp 套接字 &lt;code&gt;tcp://[host[:port]]&lt;/code&gt;，默认为 &lt;code&gt;unix:///var/run/docker.sock&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--icc=true|false&lt;/code&gt;：是否启用容器间以及跟 daemon 所在主机的通信。默认为 true。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--insecure-registry=[]&lt;/code&gt;：允许访问给定的非安全仓库服务；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--ip=&amp;quot;&amp;quot;&lt;/code&gt;：绑定容器端口时候的默认 IP 地址。缺省为 &lt;code&gt;0.0.0.0&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--ip-forward=true|false&lt;/code&gt;：是否检查启动在 Docker 主机上的启用 IP 转发服务，默认开启。注意关闭该选项将不对系统转发能力进行任何检查修改；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--ip-masq=true|false&lt;/code&gt;：是否进行地址伪装，用于容器访问外部网络，默认开启；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--iptables=true|false&lt;/code&gt;：是否允许 Docker 添加 iptables 规则。缺省为 true；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--ipv6=true|false&lt;/code&gt;：是否启用 IPv6 支持，默认关闭；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-l, --log-level=&amp;quot;debug|info|warn|error|fatal&amp;quot;&lt;/code&gt;：指定日志输出级别；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--label=&amp;quot;[]&amp;quot;&lt;/code&gt;：添加指定的键值对标注；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--log-driver=&amp;quot;json-file|syslog|journald|gelf|fluentd|awslogs|splunk|etwlogs|gcplogs|none&amp;quot;&lt;/code&gt;：指定日志后端驱动，默认为 &lt;code&gt;json-file&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--log-opt=[]&lt;/code&gt;：日志后端的选项；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--mtu=VALUE&lt;/code&gt;：指定容器网络的 &lt;code&gt;mtu&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-p=&amp;quot;&amp;quot;&lt;/code&gt;：指定 daemon 的 PID 文件路径。缺省为 &lt;code&gt;/var/run/docker.pid&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--raw-logs&lt;/code&gt;：输出原始，未加色彩的日志信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--registry-mirror=&amp;lt;scheme&amp;gt;://&amp;lt;host&amp;gt;&lt;/code&gt;：指定 &lt;code&gt;docker pull&lt;/code&gt; 时使用的注册服务器镜像地址；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-s, --storage-driver=&amp;quot;&amp;quot;&lt;/code&gt;：指定使用给定的存储后端；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--selinux-enabled=true|false&lt;/code&gt;：是否启用 SELinux 支持。缺省值为 false。SELinux 目前尚不支持 overlay 存储驱动；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--storage-opt=[]&lt;/code&gt;：驱动后端选项；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tls=true|false&lt;/code&gt;：是否对 Docker daemon 启用 TLS 安全机制，默认为否；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscacert=/.docker/ca.pem&lt;/code&gt;：TLS CA 签名的可信证书文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscert=/.docker/cert.pem&lt;/code&gt;：TLS 可信证书文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlscert=/.docker/key.pem&lt;/code&gt;：TLS 密钥文件路径；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--tlsverify=true|false&lt;/code&gt;：启用 TLS 校验，默认为否；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--userland-proxy=true|false&lt;/code&gt;：是否使用用户态代理来实现容器间和出容器的回环通信，默认为 true；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--userns-remap=default|uid:gid|user:group|user|uid&lt;/code&gt;：指定容器的用户命名空间，默认是创建新的 UID 和 GID 映射到容器内进程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;客户端命令&#34;&gt;客户端命令&lt;/h2&gt;
+
+&lt;p&gt;可以通过 &lt;code&gt;docker COMMAND --help&lt;/code&gt; 来查看这些命令的具体用法。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;attach&lt;/code&gt;：依附到一个正在运行的容器中；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;build&lt;/code&gt;：从一个 Dockerfile 创建一个镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;commit&lt;/code&gt;：从一个容器的修改中创建一个新的镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cp&lt;/code&gt;：在容器和本地宿主系统之间复制文件中；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;create&lt;/code&gt;：创建一个新容器，但并不运行它；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;diff&lt;/code&gt;：检查一个容器内文件系统的修改，包括修改和增加；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;events&lt;/code&gt;：从服务端获取实时的事件；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;exec&lt;/code&gt;：在运行的容器内执行命令；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;export&lt;/code&gt;：导出容器内容为一个 &lt;code&gt;tar&lt;/code&gt; 包；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;history&lt;/code&gt;：显示一个镜像的历史信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;images&lt;/code&gt;：列出存在的镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;import&lt;/code&gt;：导入一个文件（典型为 &lt;code&gt;tar&lt;/code&gt; 包）路径或目录来创建一个本地镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;info&lt;/code&gt;：显示一些相关的系统信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;inspect&lt;/code&gt;：显示一个容器的具体配置信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;kill&lt;/code&gt;：关闭一个运行中的容器 (包括进程和所有相关资源)；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;load&lt;/code&gt;：从一个 tar 包中加载一个镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;login&lt;/code&gt;：注册或登录到一个 Docker 的仓库服务器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;logout&lt;/code&gt;：从 Docker 的仓库服务器登出；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;logs&lt;/code&gt;：获取容器的 log 信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;network&lt;/code&gt;：管理 Docker 的网络，包括查看、创建、删除、挂载、卸载等；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;node&lt;/code&gt;：管理 swarm 集群中的节点，包括查看、更新、删除、提升/取消管理节点等；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pause&lt;/code&gt;：暂停一个容器中的所有进程；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;port&lt;/code&gt;：查找一个 nat 到一个私有网口的公共口；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ps&lt;/code&gt;：列出主机上的容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pull&lt;/code&gt;：从一个Docker的仓库服务器下拉一个镜像或仓库；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;push&lt;/code&gt;：将一个镜像或者仓库推送到一个 Docker 的注册服务器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rename&lt;/code&gt;：重命名一个容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restart&lt;/code&gt;：重启一个运行中的容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rm&lt;/code&gt;：删除给定的若干个容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rmi&lt;/code&gt;：删除给定的若干个镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;run&lt;/code&gt;：创建一个新容器，并在其中运行给定命令；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;save&lt;/code&gt;：保存一个镜像为 tar 包文件；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;search&lt;/code&gt;：在 Docker index 中搜索一个镜像；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;service&lt;/code&gt;：管理 Docker 所启动的应用服务，包括创建、更新、删除等；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;start&lt;/code&gt;：启动一个容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;stats&lt;/code&gt;：输出（一个或多个）容器的资源使用统计信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;stop&lt;/code&gt;：终止一个运行中的容器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;swarm&lt;/code&gt;：管理 Docker swarm 集群，包括创建、加入、退出、更新等；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tag&lt;/code&gt;：为一个镜像打标签；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;top&lt;/code&gt;：查看一个容器中的正在运行的进程信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;unpause&lt;/code&gt;：将一个容器内所有的进程从暂停状态中恢复；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update&lt;/code&gt;：更新指定的若干容器的配置信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;version&lt;/code&gt;：输出 Docker 的版本信息；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;volume&lt;/code&gt;：管理 Docker volume，包括查看、创建、删除等；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wait&lt;/code&gt;：阻塞直到一个容器终止，然后输出它的退出符。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;一张图总结-docker-的命令&#34;&gt;一张图总结 Docker 的命令&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://bibo19842003.github.io/img/docker/cmd_logic.png&#34; alt=&#34;Docker 命令总结&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;转至:&lt;a href=&#34;https://github.com/yeasy/docker_practice&#34;&gt;https://github.com/yeasy/docker_practice&lt;/a&gt;   d3c197ddfcc89aab5736b2a2eeb118f76e2588ba&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
