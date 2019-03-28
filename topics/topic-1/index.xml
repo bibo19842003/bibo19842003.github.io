@@ -8,8 +8,254 @@
     <language>en-EN</language>
     <managingEditor>bibo19842003@163.com (bibo)</managingEditor>
     <webMaster>bibo19842003@163.com (bibo)</webMaster>
-    <lastBuildDate>Thu, 28 Mar 2019 12:00:37 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 28 Mar 2019 14:10:30 +0800</lastBuildDate>
     <atom:link href="https://bibo19842003.github.io/topics/topic-1/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>docker contain</title>
+      <link>https://bibo19842003.github.io/docker/docker-contain/</link>
+      <pubDate>Thu, 28 Mar 2019 14:10:30 +0800</pubDate>
+      <author>bibo19842003@163.com (bibo)</author>
+      <guid>https://bibo19842003.github.io/docker/docker-contain/</guid>
+      <description>
+
+&lt;h1 id=&#34;操作-docker-容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;操作 Docker 容器&lt;/h1&gt;
+
+&lt;p&gt;容器是 Docker 又一核心概念。&lt;/p&gt;
+
+&lt;p&gt;简单的说，容器是独立运行的一个或一组应用，以及它们的运行态环境。对应的，虚拟机可以理解为模拟运行的一整套操作系统（提供了运行态环境和其他系统环境）和跑在上面的应用。&lt;/p&gt;
+
+&lt;p&gt;本章将具体介绍如何来管理一个容器，包括创建、启动和停止等。&lt;/p&gt;
+
+&lt;h2 id=&#34;启动容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动容器&lt;/h2&gt;
+
+&lt;p&gt;启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（&lt;code&gt;stopped&lt;/code&gt;）的容器重新启动。&lt;/p&gt;
+
+&lt;p&gt;因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。&lt;/p&gt;
+
+&lt;h3 id=&#34;新建并启动:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;新建并启动&lt;/h3&gt;
+
+&lt;p&gt;所需要的命令主要为 &lt;code&gt;docker run&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;例如，下面的命令输出一个 “Hello World”，之后终止容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run ubuntu:18.04 /bin/echo &#39;Hello world&#39;
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这跟在本地直接执行 &lt;code&gt;/bin/echo &#39;hello world&#39;&lt;/code&gt; 几乎感觉不出任何区别。&lt;/p&gt;
+
+&lt;p&gt;下面的命令则启动一个 bash 终端，允许用户进行交互。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -t -i ubuntu:18.04 /bin/bash
+root@af8bae53bdd3:/#
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中，&lt;code&gt;-t&lt;/code&gt; 选项让Docker分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上， &lt;code&gt;-i&lt;/code&gt; 则让容器的标准输入保持打开。&lt;/p&gt;
+
+&lt;p&gt;在交互模式下，用户可以通过所创建的终端来输入命令，例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@af8bae53bdd3:/# pwd
+/
+root@af8bae53bdd3:/# ls
+bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr var
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当利用 &lt;code&gt;docker run&lt;/code&gt; 来创建容器时，Docker 在后台运行的标准操作包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;检查本地是否存在指定的镜像，不存在就从公有仓库下载&lt;/li&gt;
+&lt;li&gt;利用镜像创建并启动一个容器&lt;/li&gt;
+&lt;li&gt;分配一个文件系统，并在只读的镜像层外面挂载一层可读写层&lt;/li&gt;
+&lt;li&gt;从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去&lt;/li&gt;
+&lt;li&gt;从地址池配置一个 ip 地址给容器&lt;/li&gt;
+&lt;li&gt;执行用户指定的应用程序&lt;/li&gt;
+&lt;li&gt;执行完毕后容器被终止&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;启动已终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动已终止容器&lt;/h3&gt;
+
+&lt;p&gt;可以利用 &lt;code&gt;docker container start&lt;/code&gt; 命令，直接将一个已经终止的容器启动运行。&lt;/p&gt;
+
+&lt;p&gt;容器的核心为所执行的应用程序，所需要的资源都是应用程序运行所必需的。除此之外，并没有其它的资源。可以在伪终端中利用 &lt;code&gt;ps&lt;/code&gt; 或 &lt;code&gt;top&lt;/code&gt; 来查看进程信息。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@ba267838cc1b:/# ps
+  PID TTY          TIME CMD
+    1 ?        00:00:00 bash
+   11 ?        00:00:00 ps
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可见，容器中仅运行了指定的 bash 应用。这种特点使得 Docker 对资源的利用率极高，是货真价实的轻量级虚拟化。&lt;/p&gt;
+
+&lt;h2 id=&#34;后台运行:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;后台运行&lt;/h2&gt;
+
+&lt;p&gt;更多的时候，需要让 Docker 在后台运行而不是直接把执行命令的结果输出在当前宿主机下。此时，可以通过添加 &lt;code&gt;-d&lt;/code&gt; 参数来实现。&lt;/p&gt;
+
+&lt;p&gt;下面举两个例子来说明一下。&lt;/p&gt;
+
+&lt;p&gt;如果不使用 &lt;code&gt;-d&lt;/code&gt; 参数运行容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run ubuntu:18.04 /bin/sh -c &amp;quot;while true; do echo hello world; sleep 1; done&amp;quot;
+hello world
+hello world
+hello world
+hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;容器会把输出的结果 (STDOUT) 打印到宿主机上面&lt;/p&gt;
+
+&lt;p&gt;如果使用了 &lt;code&gt;-d&lt;/code&gt; 参数运行容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -d ubuntu:18.04 /bin/sh -c &amp;quot;while true; do echo hello world; sleep 1; done&amp;quot;
+77b2dc01fe0f3f1265df143181e7b9af5e05279a884f4776ee75350ea9d8017a
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时容器会在后台运行并不会把输出的结果 (STDOUT) 打印到宿主机上面(输出结果可以用 &lt;code&gt;docker logs&lt;/code&gt; 查看)。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注：&lt;/strong&gt; 容器是否会长久运行，是和 &lt;code&gt;docker run&lt;/code&gt; 指定的命令有关，和 &lt;code&gt;-d&lt;/code&gt; 参数无关。&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;code&gt;-d&lt;/code&gt; 参数启动后会返回一个唯一的 id，也可以通过 &lt;code&gt;docker container ls&lt;/code&gt; 命令来查看容器信息。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker container ls
+CONTAINER ID  IMAGE         COMMAND               CREATED        STATUS       PORTS NAMES
+77b2dc01fe0f  ubuntu:18.04  /bin/sh -c &#39;while tr  2 minutes ago  Up 1 minute        agitated_wright
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;要获取容器的输出信息，可以通过 &lt;code&gt;docker container logs&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker container logs [container ID or NAMES]
+hello world
+hello world
+hello world
+. . .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;终止容器&lt;/h2&gt;
+
+&lt;p&gt;可以使用 &lt;code&gt;docker container stop&lt;/code&gt; 来终止一个运行中的容器。&lt;/p&gt;
+
+&lt;p&gt;此外，当 Docker 容器中指定的应用终结时，容器也自动终止。&lt;/p&gt;
+
+&lt;p&gt;例如对于上一章节中只启动了一个终端的容器，用户通过 &lt;code&gt;exit&lt;/code&gt; 命令或 &lt;code&gt;Ctrl+d&lt;/code&gt; 来退出终端时，所创建的容器立刻终止。&lt;/p&gt;
+
+&lt;p&gt;终止状态的容器可以用 &lt;code&gt;docker container ls -a&lt;/code&gt; 命令看到。例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker container ls -a
+CONTAINER ID        IMAGE                    COMMAND                CREATED             STATUS                          PORTS               NAMES
+ba267838cc1b        ubuntu:18.04             &amp;quot;/bin/bash&amp;quot;            30 minutes ago      Exited (0) About a minute ago                       trusting_newton
+98e5efa7d997        training/webapp:latest   &amp;quot;python app.py&amp;quot;        About an hour ago   Exited (0) 34 minutes ago                           backstabbing_pike
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;处于终止状态的容器，可以通过 &lt;code&gt;docker container start&lt;/code&gt; 命令来重新启动。&lt;/p&gt;
+
+&lt;p&gt;此外，&lt;code&gt;docker container restart&lt;/code&gt; 命令会将一个运行态的容器终止，然后再重新启动它。&lt;/p&gt;
+
+&lt;h2 id=&#34;进入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;进入容器&lt;/h2&gt;
+
+&lt;p&gt;在使用 &lt;code&gt;-d&lt;/code&gt; 参数时，容器启动后会进入后台。&lt;/p&gt;
+
+&lt;p&gt;某些时候需要进入容器进行操作，包括使用 &lt;code&gt;docker attach&lt;/code&gt; 命令或 &lt;code&gt;docker exec&lt;/code&gt; 命令，推荐大家使用 &lt;code&gt;docker exec&lt;/code&gt; 命令，原因会在下面说明。&lt;/p&gt;
+
+&lt;h3 id=&#34;attach-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;attach&lt;/code&gt; 命令&lt;/h3&gt;
+
+&lt;p&gt;下面示例如何使用 &lt;code&gt;docker attach&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -dit ubuntu
+243c32535da7d142fb0e6df616a3c3ada0b8ab417937c853a9e1c251f499f550
+
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+243c32535da7        ubuntu:latest       &amp;quot;/bin/bash&amp;quot;         18 seconds ago      Up 17 seconds                           nostalgic_hypatia
+
+$ docker attach 243c
+root@243c32535da7:/#
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;注意：&lt;/em&gt; 如果从这个 stdin 中 exit，会导致容器的停止。&lt;/p&gt;
+
+&lt;h3 id=&#34;exec-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;exec&lt;/code&gt; 命令&lt;/h3&gt;
+
+&lt;h4 id=&#34;i-t-参数:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;-i -t 参数&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;docker exec&lt;/code&gt; 后边可以跟多个参数，这里主要说明 &lt;code&gt;-i&lt;/code&gt; &lt;code&gt;-t&lt;/code&gt; 参数。&lt;/p&gt;
+
+&lt;p&gt;只用 &lt;code&gt;-i&lt;/code&gt; 参数时，由于没有分配伪终端，界面没有我们熟悉的 Linux 命令提示符，但命令执行结果仍然可以返回。&lt;/p&gt;
+
+&lt;p&gt;当 &lt;code&gt;-i&lt;/code&gt; &lt;code&gt;-t&lt;/code&gt; 参数一起使用时，则可以看到我们熟悉的 Linux 命令提示符。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -dit ubuntu
+69d137adef7a8a689cbcb059e94da5489d3cddd240ff675c640c8d96e84fe1f6
+
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+69d137adef7a        ubuntu:latest       &amp;quot;/bin/bash&amp;quot;         18 seconds ago      Up 17 seconds                           zealous_swirles
+
+$ docker exec -i 69d1 bash
+ls
+bin
+boot
+dev
+...
+
+$ docker exec -it 69d1 bash
+root@69d137adef7a:/#
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果从这个 stdin 中 exit，不会导致容器的停止。这就是为什么推荐大家使用 &lt;code&gt;docker exec&lt;/code&gt; 的原因。&lt;/p&gt;
+
+&lt;p&gt;更多参数说明请使用 &lt;code&gt;docker exec --help&lt;/code&gt; 查看。&lt;/p&gt;
+
+&lt;h2 id=&#34;导出和导入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出和导入容器&lt;/h2&gt;
+
+&lt;h3 id=&#34;导出容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出容器&lt;/h3&gt;
+
+&lt;p&gt;如果要导出本地某个容器，可以使用 &lt;code&gt;docker export&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker container ls -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                    PORTS               NAMES
+7691a814370e        ubuntu:18.04        &amp;quot;/bin/bash&amp;quot;         36 hours ago        Exited (0) 21 hours ago                       test
+$ docker export 7691a814370e &amp;gt; ubuntu.tar
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样将导出容器快照到本地文件。&lt;/p&gt;
+
+&lt;h3 id=&#34;导入容器快照:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导入容器快照&lt;/h3&gt;
+
+&lt;p&gt;可以使用 &lt;code&gt;docker import&lt;/code&gt; 从容器快照文件中再导入为镜像，例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat ubuntu.tar | docker import - test/ubuntu:v1.0
+$ docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED              VIRTUAL SIZE
+test/ubuntu         v1.0                9d37a6082e97        About a minute ago   171.3 MB
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此外，也可以通过指定 URL 或者某个目录来导入，例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker import http://example.com/exampleimage.tgz example/imagerepo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;注：用户既可以使用 &lt;code&gt;docker load&lt;/code&gt; 来导入镜像存储文件到本地镜像库，也可以使用 &lt;code&gt;docker import&lt;/code&gt; 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;删除容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;删除容器&lt;/h2&gt;
+
+&lt;p&gt;可以使用 &lt;code&gt;docker container rm&lt;/code&gt; 来删除一个处于终止状态的容器。例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker container rm  trusting_newton
+trusting_newton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果要删除一个运行中的容器，可以添加 &lt;code&gt;-f&lt;/code&gt; 参数。Docker 会发送 &lt;code&gt;SIGKILL&lt;/code&gt; 信号给容器。&lt;/p&gt;
+
+&lt;h2 id=&#34;清理所有处于终止状态的容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;清理所有处于终止状态的容器&lt;/h2&gt;
+
+&lt;p&gt;用 &lt;code&gt;docker container ls -a&lt;/code&gt; 命令可以查看所有已经创建的包括终止状态的容器，如果数量太多要一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker container prune
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;转至:&lt;a href=&#34;https://github.com/yeasy/docker_practice&#34;&gt;https://github.com/yeasy/docker_practice&lt;/a&gt;   d3c197ddfcc89aab5736b2a2eeb118f76e2588ba&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>docker concept</title>
@@ -170,7 +416,7 @@
       <guid>https://bibo19842003.github.io/docker/dockerfile/</guid>
       <description>
 
-&lt;h2 id=&#34;使用-dockerfile-定制镜像&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
+&lt;h2 id=&#34;使用-dockerfile-定制镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
 
 &lt;p&gt;从刚才的 &lt;code&gt;docker commit&lt;/code&gt; 的学习中，我们可以了解到，镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。&lt;/p&gt;
 
@@ -193,7 +439,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;这个 Dockerfile 很简单，一共就两行。涉及到了两条指令，&lt;code&gt;FROM&lt;/code&gt; 和 &lt;code&gt;RUN&lt;/code&gt;。&lt;/p&gt;
 
-&lt;h3 id=&#34;from-指定基础镜像&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
+&lt;h3 id=&#34;from-指定基础镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
 
 &lt;p&gt;所谓定制镜像，那一定是以一个镜像为基础，在其上进行定制。就像我们之前运行了一个 &lt;code&gt;nginx&lt;/code&gt; 镜像的容器，再进行修改一样，基础镜像是必须指定的。而 &lt;code&gt;FROM&lt;/code&gt; 就是指定 &lt;strong&gt;基础镜像&lt;/strong&gt;，因此一个 &lt;code&gt;Dockerfile&lt;/code&gt; 中 &lt;code&gt;FROM&lt;/code&gt; 是必备的指令，并且必须是第一条指令。&lt;/p&gt;
 
@@ -211,7 +457,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，比如 &lt;a href=&#34;https://hub.docker.com/_/swarm/&#34;&gt;&lt;code&gt;swarm&lt;/code&gt;&lt;/a&gt;、&lt;a href=&#34;https://quay.io/repository/coreos/etcd&#34;&gt;&lt;code&gt;coreos/etcd&lt;/code&gt;&lt;/a&gt;。对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 &lt;code&gt;FROM scratch&lt;/code&gt; 会让镜像体积更加小巧。使用 &lt;a href=&#34;https://golang.org/&#34;&gt;Go 语言&lt;/a&gt; 开发的应用很多会使用这种方式来制作镜像，这也是为什么有人认为 Go 是特别适合容器微服务架构的语言的原因之一。&lt;/p&gt;
 
-&lt;h3 id=&#34;run-执行命令&#34;&gt;RUN 执行命令&lt;/h3&gt;
+&lt;h3 id=&#34;run-执行命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;RUN 执行命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;RUN&lt;/code&gt; 指令是用来执行命令行命令的。由于命令行的强大能力，&lt;code&gt;RUN&lt;/code&gt; 指令在定制镜像时是最常用的指令之一。其格式有两种：&lt;/p&gt;
 
@@ -272,7 +518,7 @@ RUN buildDeps=&#39;gcc libc6-dev make wget&#39; \
 
 &lt;p&gt;很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件。&lt;/p&gt;
 
-&lt;h3 id=&#34;构建镜像&#34;&gt;构建镜像&lt;/h3&gt;
+&lt;h3 id=&#34;构建镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;构建镜像&lt;/h3&gt;
 
 &lt;p&gt;好了，让我们再回到之前定制的 nginx 镜像的 Dockerfile 来。现在我们明白了这个 Dockerfile 的内容，那么让我们来构建这个镜像吧。&lt;/p&gt;
 
@@ -298,7 +544,7 @@ Successfully built 44aa4490ce2c
 
 &lt;p&gt;在这里我们指定了最终镜像的名称 &lt;code&gt;-t nginx:v3&lt;/code&gt;，构建成功后，我们可以像之前运行 &lt;code&gt;nginx:v2&lt;/code&gt; 那样来运行这个镜像，其结果会和 &lt;code&gt;nginx:v2&lt;/code&gt; 一样。&lt;/p&gt;
 
-&lt;h3 id=&#34;镜像构建上下文-context&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
+&lt;h3 id=&#34;镜像构建上下文-context:13a98cce61a7c185eb25fd01e8410188&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
 
 &lt;p&gt;如果注意，会看到 &lt;code&gt;docker build&lt;/code&gt; 命令最后有一个 &lt;code&gt;.&lt;/code&gt;。&lt;code&gt;.&lt;/code&gt; 表示当前目录，而 &lt;code&gt;Dockerfile&lt;/code&gt; 就在当前目录，因此不少初学者以为这个路径是在指定 &lt;code&gt;Dockerfile&lt;/code&gt; 所在路径，这么理解其实是不准确的。如果对应上面的命令格式，你可能会发现，这是在指定 &lt;strong&gt;上下文路径&lt;/strong&gt;。那么什么是上下文呢？&lt;/p&gt;
 
@@ -336,9 +582,9 @@ Sending build context to Docker daemon 2.048 kB
 
 &lt;p&gt;当然，一般大家习惯性的会使用默认的文件名 &lt;code&gt;Dockerfile&lt;/code&gt;，以及会将其置于镜像构建上下文目录中。&lt;/p&gt;
 
-&lt;h3 id=&#34;其它-docker-build-的用法&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
+&lt;h3 id=&#34;其它-docker-build-的用法:13a98cce61a7c185eb25fd01e8410188&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
 
-&lt;h4 id=&#34;直接用-git-repo-进行构建&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;直接用-git-repo-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
 
 &lt;p&gt;或许你已经注意到了，&lt;code&gt;docker build&lt;/code&gt; 还支持从 URL 构建，比如可以直接从 Git repo 中构建：&lt;/p&gt;
 
@@ -354,14 +600,14 @@ aed15891ba52: Already exists
 
 &lt;p&gt;这行命令指定了构建所需的 Git repo，并且指定默认的 &lt;code&gt;master&lt;/code&gt; 分支，构建目录为 &lt;code&gt;/11.1/&lt;/code&gt;，然后 Docker 就会自己去 &lt;code&gt;git clone&lt;/code&gt; 这个项目、切换到指定分支、并进入到指定目录后开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;用给定的-tar-压缩包构建&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
+&lt;h4 id=&#34;用给定的-tar-压缩包构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build http://server/context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果所给出的 URL 不是个 Git repo，而是个 &lt;code&gt;tar&lt;/code&gt; 压缩包，那么 Docker 引擎会下载这个包，并自动解压缩，以其作为上下文，开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker build - &amp;lt; Dockerfile
 &lt;/code&gt;&lt;/pre&gt;
@@ -373,18 +619,18 @@ aed15891ba52: Already exists
 
 &lt;p&gt;如果标准输入传入的是文本文件，则将其视为 &lt;code&gt;Dockerfile&lt;/code&gt;，并开始构建。这种形式由于直接从标准输入中读取 Dockerfile 的内容，它没有上下文，因此不可以像其他方法那样可以将本地文件 &lt;code&gt;COPY&lt;/code&gt; 进镜像之类的事情。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build - &amp;lt; context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果发现标准输入的文件格式是 &lt;code&gt;gzip&lt;/code&gt;、&lt;code&gt;bzip2&lt;/code&gt; 以及 &lt;code&gt;xz&lt;/code&gt; 的话，将会使其为上下文压缩包，直接将其展开，将里面视为上下文，并开始构建。&lt;/p&gt;
 
-&lt;h2 id=&#34;dockerfile-指令详解&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
+&lt;h2 id=&#34;dockerfile-指令详解:13a98cce61a7c185eb25fd01e8410188&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
 
 &lt;p&gt;我们已经介绍了 &lt;code&gt;FROM&lt;/code&gt;，&lt;code&gt;RUN&lt;/code&gt;，还提及了 &lt;code&gt;COPY&lt;/code&gt;, &lt;code&gt;ADD&lt;/code&gt;，其实 &lt;code&gt;Dockerfile&lt;/code&gt; 功能很强大，它提供了十多个指令。下面我们继续讲解其他的指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;copy-复制文件&#34;&gt;COPY 复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;copy-复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;COPY 复制文件&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -418,7 +664,7 @@ COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;add-更高级的复制文件&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;add-更高级的复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ADD&lt;/code&gt; 指令和 &lt;code&gt;COPY&lt;/code&gt; 的格式和性质基本一致。但是在 &lt;code&gt;COPY&lt;/code&gt; 基础上增加了一些功能。&lt;/p&gt;
 
@@ -449,7 +695,7 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;cmd-容器启动命令&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
+&lt;h3 id=&#34;cmd-容器启动命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;CMD&lt;/code&gt; 指令的格式和 &lt;code&gt;RUN&lt;/code&gt; 相似，也是两种格式：&lt;/p&gt;
 
@@ -497,7 +743,7 @@ ADD --chown=10:11 files* /mydir/
 &lt;pre&gt;&lt;code class=&#34;language-Dockerfile&#34;&gt;CMD [&amp;quot;nginx&amp;quot;, &amp;quot;-g&amp;quot;, &amp;quot;daemon off;&amp;quot;]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;entrypoint-入口点&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
+&lt;h3 id=&#34;entrypoint-入口点:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt; 的格式和 &lt;code&gt;RUN&lt;/code&gt; 指令格式一样，分为 &lt;code&gt;exec&lt;/code&gt; 格式和 &lt;code&gt;shell&lt;/code&gt; 格式。&lt;/p&gt;
 
@@ -510,7 +756,7 @@ ADD --chown=10:11 files* /mydir/
 
 &lt;p&gt;那么有了 &lt;code&gt;CMD&lt;/code&gt; 后，为什么还要有 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 呢？这种 &lt;code&gt;&amp;lt;ENTRYPOINT&amp;gt; &amp;quot;&amp;lt;CMD&amp;gt;&amp;quot;&lt;/code&gt; 有什么好处么？让我们来看几个场景。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
+&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
 
 &lt;p&gt;假设我们需要一个得知自己当前公网 IP 的镜像，那么可以先用 &lt;code&gt;CMD&lt;/code&gt; 来实现：&lt;/p&gt;
 
@@ -573,7 +819,7 @@ Connection: keep-alive
 
 &lt;p&gt;可以看到，这次成功了。这是因为当存在 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 后，&lt;code&gt;CMD&lt;/code&gt; 的内容将会作为参数传给 &lt;code&gt;ENTRYPOINT&lt;/code&gt;，而这里 &lt;code&gt;-i&lt;/code&gt; 就是新的 &lt;code&gt;CMD&lt;/code&gt;，因此会作为参数传给 &lt;code&gt;curl&lt;/code&gt;，从而达到了我们预期的效果。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景二-应用运行前的准备工作&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
+&lt;h4 id=&#34;场景二-应用运行前的准备工作:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
 
 &lt;p&gt;启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作。&lt;/p&gt;
 
@@ -612,7 +858,7 @@ exec &amp;quot;$@&amp;quot;
 uid=0(root) gid=0(root) groups=0(root)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;env-设置环境变量&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
+&lt;h3 id=&#34;env-设置环境变量:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
 
 &lt;p&gt;格式有两种：&lt;/p&gt;
 
@@ -648,7 +894,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 &lt;code&gt;Dockerfile&lt;/code&gt; 制作更多的镜像，只需使用不同的环境变量即可。&lt;/p&gt;
 
-&lt;h3 id=&#34;arg-构建参数&#34;&gt;ARG 构建参数&lt;/h3&gt;
+&lt;h3 id=&#34;arg-构建参数:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ARG 构建参数&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ARG &amp;lt;参数名&amp;gt;[=&amp;lt;默认值&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -658,7 +904,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在 1.13 之前的版本，要求 &lt;code&gt;--build-arg&lt;/code&gt; 中的参数名，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中用 &lt;code&gt;ARG&lt;/code&gt; 定义过了，换句话说，就是 &lt;code&gt;--build-arg&lt;/code&gt; 指定的参数，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 &lt;code&gt;Dockerfile&lt;/code&gt; 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。&lt;/p&gt;
 
-&lt;h3 id=&#34;volume-定义匿名卷&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
+&lt;h3 id=&#34;volume-定义匿名卷:13a98cce61a7c185eb25fd01e8410188&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
 
 &lt;p&gt;格式为：&lt;/p&gt;
 
@@ -679,7 +925,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在这行命令中，就使用了 &lt;code&gt;mydata&lt;/code&gt; 这个命名卷挂载到了 &lt;code&gt;/data&lt;/code&gt; 这个位置，替代了 &lt;code&gt;Dockerfile&lt;/code&gt; 中定义的匿名卷的挂载配置。&lt;/p&gt;
 
-&lt;h3 id=&#34;expose-声明端口&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
+&lt;h3 id=&#34;expose-声明端口:13a98cce61a7c185eb25fd01e8410188&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;EXPOSE &amp;lt;端口1&amp;gt; [&amp;lt;端口2&amp;gt;...]&lt;/code&gt;。&lt;/p&gt;
 
@@ -687,7 +933,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;要将 &lt;code&gt;EXPOSE&lt;/code&gt; 和在运行时使用 &lt;code&gt;-p &amp;lt;宿主端口&amp;gt;:&amp;lt;容器端口&amp;gt;&lt;/code&gt; 区分开来。&lt;code&gt;-p&lt;/code&gt;，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 &lt;code&gt;EXPOSE&lt;/code&gt; 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。&lt;/p&gt;
 
-&lt;h3 id=&#34;workdir-指定工作目录&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
+&lt;h3 id=&#34;workdir-指定工作目录:13a98cce61a7c185eb25fd01e8410188&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;WORKDIR &amp;lt;工作目录路径&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -705,7 +951,7 @@ RUN echo &amp;quot;hello&amp;quot; &amp;gt; world.txt
 
 &lt;p&gt;因此如果需要改变以后各层的工作目录的位置，那么应该使用 &lt;code&gt;WORKDIR&lt;/code&gt; 指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;user-指定当前用户&#34;&gt;USER 指定当前用户&lt;/h3&gt;
+&lt;h3 id=&#34;user-指定当前用户:13a98cce61a7c185eb25fd01e8410188&#34;&gt;USER 指定当前用户&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;USER &amp;lt;用户名&amp;gt;[:&amp;lt;用户组&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -730,7 +976,7 @@ RUN wget -O /usr/local/bin/gosu &amp;quot;https://github.com/tianon/gosu/release
 CMD [ &amp;quot;exec&amp;quot;, &amp;quot;gosu&amp;quot;, &amp;quot;redis&amp;quot;, &amp;quot;redis-server&amp;quot; ]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;healthcheck-健康检查&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
+&lt;h3 id=&#34;healthcheck-健康检查:13a98cce61a7c185eb25fd01e8410188&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -812,7 +1058,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;onbuild-为他人做嫁衣裳&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
+&lt;h3 id=&#34;onbuild-为他人做嫁衣裳:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ONBUILD &amp;lt;其它指令&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -873,7 +1119,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 
 &lt;p&gt;是的，只有这么一行。当在各个项目目录中，用这个只有一行的 &lt;code&gt;Dockerfile&lt;/code&gt; 构建镜像时，之前基础镜像的那三行 &lt;code&gt;ONBUILD&lt;/code&gt; 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 &lt;code&gt;npm install&lt;/code&gt;，生成应用镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;参考文档&#34;&gt;参考文档&lt;/h3&gt;
+&lt;h3 id=&#34;参考文档:13a98cce61a7c185eb25fd01e8410188&#34;&gt;参考文档&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;code&gt;Dockerfie&lt;/code&gt; 官方文档：&lt;a href=&#34;https://docs.docker.com/engine/reference/builder/&#34;&gt;https://docs.docker.com/engine/reference/builder/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -895,9 +1141,9 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
       <guid>https://bibo19842003.github.io/docker/docker-cmd/</guid>
       <description>
 
-&lt;h1 id=&#34;docker-命令查询:c61fc795787fdacd60e63e2179c46747&#34;&gt;Docker 命令查询&lt;/h1&gt;
+&lt;h1 id=&#34;docker-命令查询&#34;&gt;Docker 命令查询&lt;/h1&gt;
 
-&lt;h2 id=&#34;基本语法:c61fc795787fdacd60e63e2179c46747&#34;&gt;基本语法&lt;/h2&gt;
+&lt;h2 id=&#34;基本语法&#34;&gt;基本语法&lt;/h2&gt;
 
 &lt;p&gt;Docker 命令有两大类，客户端命令和服务端命令。前者是主要的操作接口，后者用来启动 Docker Daemon。&lt;/p&gt;
 
@@ -909,7 +1155,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 
 &lt;p&gt;可以通过 &lt;code&gt;man docker&lt;/code&gt; 或 &lt;code&gt;docker help&lt;/code&gt; 来查看这些命令。&lt;/p&gt;
 
-&lt;h2 id=&#34;客户端命令选项:c61fc795787fdacd60e63e2179c46747&#34;&gt;客户端命令选项&lt;/h2&gt;
+&lt;h2 id=&#34;客户端命令选项&#34;&gt;客户端命令选项&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;--config=&amp;quot;&amp;quot;&lt;/code&gt;：指定客户端配置文件，默认为 &lt;code&gt;~/.docker&lt;/code&gt;；&lt;/li&gt;
@@ -923,7 +1169,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 &lt;li&gt;&lt;code&gt;--tlsverify=true|false&lt;/code&gt;：启用 TLS 校验，默认为否。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;dockerd-命令选项:c61fc795787fdacd60e63e2179c46747&#34;&gt;dockerd 命令选项&lt;/h2&gt;
+&lt;h2 id=&#34;dockerd-命令选项&#34;&gt;dockerd 命令选项&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;--api-cors-header=&amp;quot;&amp;quot;&lt;/code&gt;：CORS 头部域，默认不允许 CORS，要允许任意的跨域访问，可以指定为 &amp;laquo;*&amp;laquo;；&lt;/li&gt;
@@ -978,7 +1224,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 &lt;li&gt;&lt;code&gt;--userns-remap=default|uid:gid|user:group|user|uid&lt;/code&gt;：指定容器的用户命名空间，默认是创建新的 UID 和 GID 映射到容器内进程。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;客户端命令:c61fc795787fdacd60e63e2179c46747&#34;&gt;客户端命令&lt;/h2&gt;
+&lt;h2 id=&#34;客户端命令&#34;&gt;客户端命令&lt;/h2&gt;
 
 &lt;p&gt;可以通过 &lt;code&gt;docker COMMAND --help&lt;/code&gt; 来查看这些命令的具体用法。&lt;/p&gt;
 
@@ -1030,7 +1276,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 &lt;li&gt;&lt;code&gt;wait&lt;/code&gt;：阻塞直到一个容器终止，然后输出它的退出符。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;一张图总结-docker-的命令:c61fc795787fdacd60e63e2179c46747&#34;&gt;一张图总结 Docker 的命令&lt;/h2&gt;
+&lt;h2 id=&#34;一张图总结-docker-的命令&#34;&gt;一张图总结 Docker 的命令&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://bibo19842003.github.io/img/docker/cmd_logic.png&#34; alt=&#34;Docker 命令总结&#34; /&gt;&lt;/p&gt;
 

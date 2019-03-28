@@ -19,9 +19,9 @@
       <guid>https://bibo19842003.github.io/docker/docker-cmd/</guid>
       <description>
 
-&lt;h1 id=&#34;docker-命令查询:c61fc795787fdacd60e63e2179c46747&#34;&gt;Docker 命令查询&lt;/h1&gt;
+&lt;h1 id=&#34;docker-命令查询&#34;&gt;Docker 命令查询&lt;/h1&gt;
 
-&lt;h2 id=&#34;基本语法:c61fc795787fdacd60e63e2179c46747&#34;&gt;基本语法&lt;/h2&gt;
+&lt;h2 id=&#34;基本语法&#34;&gt;基本语法&lt;/h2&gt;
 
 &lt;p&gt;Docker 命令有两大类，客户端命令和服务端命令。前者是主要的操作接口，后者用来启动 Docker Daemon。&lt;/p&gt;
 
@@ -33,7 +33,7 @@
 
 &lt;p&gt;可以通过 &lt;code&gt;man docker&lt;/code&gt; 或 &lt;code&gt;docker help&lt;/code&gt; 来查看这些命令。&lt;/p&gt;
 
-&lt;h2 id=&#34;客户端命令选项:c61fc795787fdacd60e63e2179c46747&#34;&gt;客户端命令选项&lt;/h2&gt;
+&lt;h2 id=&#34;客户端命令选项&#34;&gt;客户端命令选项&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;--config=&amp;quot;&amp;quot;&lt;/code&gt;：指定客户端配置文件，默认为 &lt;code&gt;~/.docker&lt;/code&gt;；&lt;/li&gt;
@@ -47,7 +47,7 @@
 &lt;li&gt;&lt;code&gt;--tlsverify=true|false&lt;/code&gt;：启用 TLS 校验，默认为否。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;dockerd-命令选项:c61fc795787fdacd60e63e2179c46747&#34;&gt;dockerd 命令选项&lt;/h2&gt;
+&lt;h2 id=&#34;dockerd-命令选项&#34;&gt;dockerd 命令选项&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;--api-cors-header=&amp;quot;&amp;quot;&lt;/code&gt;：CORS 头部域，默认不允许 CORS，要允许任意的跨域访问，可以指定为 &amp;laquo;*&amp;laquo;；&lt;/li&gt;
@@ -102,7 +102,7 @@
 &lt;li&gt;&lt;code&gt;--userns-remap=default|uid:gid|user:group|user|uid&lt;/code&gt;：指定容器的用户命名空间，默认是创建新的 UID 和 GID 映射到容器内进程。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;客户端命令:c61fc795787fdacd60e63e2179c46747&#34;&gt;客户端命令&lt;/h2&gt;
+&lt;h2 id=&#34;客户端命令&#34;&gt;客户端命令&lt;/h2&gt;
 
 &lt;p&gt;可以通过 &lt;code&gt;docker COMMAND --help&lt;/code&gt; 来查看这些命令的具体用法。&lt;/p&gt;
 
@@ -154,7 +154,7 @@
 &lt;li&gt;&lt;code&gt;wait&lt;/code&gt;：阻塞直到一个容器终止，然后输出它的退出符。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;一张图总结-docker-的命令:c61fc795787fdacd60e63e2179c46747&#34;&gt;一张图总结 Docker 的命令&lt;/h2&gt;
+&lt;h2 id=&#34;一张图总结-docker-的命令&#34;&gt;一张图总结 Docker 的命令&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://bibo19842003.github.io/img/docker/cmd_logic.png&#34; alt=&#34;Docker 命令总结&#34; /&gt;&lt;/p&gt;
 
