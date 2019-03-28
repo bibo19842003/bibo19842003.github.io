@@ -8,8 +8,190 @@
     <language>en-EN</language>
     <managingEditor>bibo19842003@163.com (bibo)</managingEditor>
     <webMaster>bibo19842003@163.com (bibo)</webMaster>
-    <lastBuildDate>Thu, 28 Mar 2019 14:10:30 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 28 Mar 2019 14:20:25 +0800</lastBuildDate>
     <atom:link href="https://bibo19842003.github.io/topics/topic-1/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>docker data management</title>
+      <link>https://bibo19842003.github.io/docker/docker-data-management/</link>
+      <pubDate>Thu, 28 Mar 2019 14:20:25 +0800</pubDate>
+      <author>bibo19842003@163.com (bibo)</author>
+      <guid>https://bibo19842003.github.io/docker/docker-data-management/</guid>
+      <description>
+
+&lt;h1 id=&#34;docker-数据管理&#34;&gt;Docker 数据管理&lt;/h1&gt;
+
+&lt;p&gt;在容器中管理数据主要有两种方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;数据卷（Volumes）&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;挂载主机目录 (Bind mounts)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;数据卷&#34;&gt;数据卷&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;数据卷&lt;/code&gt; 是一个可供一个或多个容器使用的特殊目录，它绕过 UFS，可以提供很多有用的特性：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;数据卷&lt;/code&gt; 可以在容器之间共享和重用&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;对 &lt;code&gt;数据卷&lt;/code&gt; 的修改会立马生效&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;对 &lt;code&gt;数据卷&lt;/code&gt; 的更新，不会影响镜像&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;数据卷&lt;/code&gt; 默认会一直存在，即使容器被删除&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意：&lt;code&gt;数据卷&lt;/code&gt; 的使用，类似于 Linux 下对目录或文件进行 mount，镜像中的被指定为挂载点的目录中的文件会隐藏掉，能显示看的是挂载的 &lt;code&gt;数据卷&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建一个数据卷&#34;&gt;创建一个数据卷&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker volume create my-vol
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看所有的 &lt;code&gt;数据卷&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker volume ls
+
+local               my-vol
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在主机里使用以下命令可以查看指定 &lt;code&gt;数据卷&lt;/code&gt; 的信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker volume inspect my-vol
+[
+    {
+        &amp;quot;Driver&amp;quot;: &amp;quot;local&amp;quot;,
+        &amp;quot;Labels&amp;quot;: {},
+        &amp;quot;Mountpoint&amp;quot;: &amp;quot;/var/lib/docker/volumes/my-vol/_data&amp;quot;,
+        &amp;quot;Name&amp;quot;: &amp;quot;my-vol&amp;quot;,
+        &amp;quot;Options&amp;quot;: {},
+        &amp;quot;Scope&amp;quot;: &amp;quot;local&amp;quot;
+    }
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;启动一个挂载数据卷的容器&#34;&gt;启动一个挂载数据卷的容器&lt;/h3&gt;
+
+&lt;p&gt;在用 &lt;code&gt;docker run&lt;/code&gt; 命令的时候，使用 &lt;code&gt;--mount&lt;/code&gt; 标记来将 &lt;code&gt;数据卷&lt;/code&gt; 挂载到容器里。在一次 &lt;code&gt;docker run&lt;/code&gt; 中可以挂载多个 &lt;code&gt;数据卷&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;下面创建一个名为 &lt;code&gt;web&lt;/code&gt; 的容器，并加载一个 &lt;code&gt;数据卷&lt;/code&gt; 到容器的 &lt;code&gt;/webapp&lt;/code&gt; 目录。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -d -P \
+    --name web \
+    # -v my-vol:/wepapp \
+    --mount source=my-vol,target=/webapp \
+    training/webapp \
+    python app.py
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;查看数据卷的具体信息&#34;&gt;查看数据卷的具体信息&lt;/h3&gt;
+
+&lt;p&gt;在主机里使用以下命令可以查看 &lt;code&gt;web&lt;/code&gt; 容器的信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker inspect web
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;数据卷&lt;/code&gt; 信息在 &amp;laquo;Mounts&amp;raquo; Key 下面&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;&amp;quot;Mounts&amp;quot;: [
+    {
+        &amp;quot;Type&amp;quot;: &amp;quot;volume&amp;quot;,
+        &amp;quot;Name&amp;quot;: &amp;quot;my-vol&amp;quot;,
+        &amp;quot;Source&amp;quot;: &amp;quot;/var/lib/docker/volumes/my-vol/_data&amp;quot;,
+        &amp;quot;Destination&amp;quot;: &amp;quot;/app&amp;quot;,
+        &amp;quot;Driver&amp;quot;: &amp;quot;local&amp;quot;,
+        &amp;quot;Mode&amp;quot;: &amp;quot;&amp;quot;,
+        &amp;quot;RW&amp;quot;: true,
+        &amp;quot;Propagation&amp;quot;: &amp;quot;&amp;quot;
+    }
+],
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;删除数据卷&#34;&gt;删除数据卷&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker volume rm my-vol
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;数据卷&lt;/code&gt; 是被设计用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除 &lt;code&gt;数据卷&lt;/code&gt;，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 &lt;code&gt;数据卷&lt;/code&gt;。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 &lt;code&gt;docker rm -v&lt;/code&gt; 这个命令。&lt;/p&gt;
+
+&lt;p&gt;无主的数据卷可能会占据很多空间，要清理请使用以下命令&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker volume prune
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;挂载主机目录&#34;&gt;挂载主机目录&lt;/h2&gt;
+
+&lt;h3 id=&#34;挂载一个主机目录作为数据卷&#34;&gt;挂载一个主机目录作为数据卷&lt;/h3&gt;
+
+&lt;p&gt;使用 &lt;code&gt;--mount&lt;/code&gt; 标记可以指定挂载一个本地主机的目录到容器中去。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -d -P \
+    --name web \
+    # -v /src/webapp:/opt/webapp \
+    --mount type=bind,source=/src/webapp,target=/opt/webapp \
+    training/webapp \
+    python app.py
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的命令加载主机的 &lt;code&gt;/src/webapp&lt;/code&gt; 目录到容器的 &lt;code&gt;/opt/webapp&lt;/code&gt;目录。这个功能在进行测试的时候十分方便，比如用户可以放置一些程序到本地目录中，来查看容器是否正常工作。本地目录的路径必须是绝对路径，以前使用 &lt;code&gt;-v&lt;/code&gt; 参数时如果本地目录不存在 Docker 会自动为你创建一个文件夹，现在使用 &lt;code&gt;--mount&lt;/code&gt; 参数时如果本地目录不存在，Docker 会报错。&lt;/p&gt;
+
+&lt;p&gt;Docker 挂载主机目录的默认权限是 &lt;code&gt;读写&lt;/code&gt;，用户也可以通过增加 &lt;code&gt;readonly&lt;/code&gt; 指定为 &lt;code&gt;只读&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -d -P \
+    --name web \
+    # -v /src/webapp:/opt/webapp:ro \
+    --mount type=bind,source=/src/webapp,target=/opt/webapp,readonly \
+    training/webapp \
+    python app.py
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;加了 &lt;code&gt;readonly&lt;/code&gt; 之后，就挂载为 &lt;code&gt;只读&lt;/code&gt; 了。如果你在容器内 &lt;code&gt;/opt/webapp&lt;/code&gt; 目录新建文件，会显示如下错误&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/opt/webapp # touch new.txt
+touch: new.txt: Read-only file system
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;查看数据卷的具体信息-1&#34;&gt;查看数据卷的具体信息&lt;/h3&gt;
+
+&lt;p&gt;在主机里使用以下命令可以查看 &lt;code&gt;web&lt;/code&gt; 容器的信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker inspect web
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;挂载主机目录&lt;/code&gt; 的配置信息在 &amp;laquo;Mounts&amp;raquo; Key 下面&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;&amp;quot;Mounts&amp;quot;: [
+    {
+        &amp;quot;Type&amp;quot;: &amp;quot;bind&amp;quot;,
+        &amp;quot;Source&amp;quot;: &amp;quot;/src/webapp&amp;quot;,
+        &amp;quot;Destination&amp;quot;: &amp;quot;/opt/webapp&amp;quot;,
+        &amp;quot;Mode&amp;quot;: &amp;quot;&amp;quot;,
+        &amp;quot;RW&amp;quot;: true,
+        &amp;quot;Propagation&amp;quot;: &amp;quot;rprivate&amp;quot;
+    }
+],
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;挂载一个本地主机文件作为数据卷&#34;&gt;挂载一个本地主机文件作为数据卷&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;--mount&lt;/code&gt; 标记也可以从主机挂载单个文件到容器中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run --rm -it \
+   # -v $HOME/.bash_history:/root/.bash_history \
+   --mount type=bind,source=$HOME/.bash_history,target=/root/.bash_history \
+   ubuntu:18.04 \
+   bash
+
+root@2affd44b4667:/# history
+1  ls
+2  diskutil list
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样就可以记录在容器输入过的命令了。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>docker contain</title>
@@ -265,7 +447,7 @@ trusting_newton
       <guid>https://bibo19842003.github.io/docker/docker-concept/</guid>
       <description>
 
-&lt;h1 id=&#34;基本概念:c1314578dde76a3a394a9042c269f756&#34;&gt;基本概念&lt;/h1&gt;
+&lt;h1 id=&#34;基本概念&#34;&gt;基本概念&lt;/h1&gt;
 
 &lt;p&gt;Docker 包括三个基本概念
 * 镜像（&lt;code&gt;Image&lt;/code&gt;）
@@ -274,13 +456,13 @@ trusting_newton
 
 &lt;p&gt;理解了这三个概念，就理解了 Docker 的整个生命周期。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-镜像:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 镜像&lt;/h2&gt;
+&lt;h2 id=&#34;docker-镜像&#34;&gt;Docker 镜像&lt;/h2&gt;
 
 &lt;p&gt;我们都知道，操作系统分为内核和用户空间。对于 Linux 而言，内核启动后，会挂载 &lt;code&gt;root&lt;/code&gt; 文件系统为其提供用户空间支持。而 Docker 镜像（Image），就相当于是一个 &lt;code&gt;root&lt;/code&gt; 文件系统。比如官方镜像 &lt;code&gt;ubuntu:18.04&lt;/code&gt; 就包含了完整的一套 Ubuntu 18.04 最小系统的 &lt;code&gt;root&lt;/code&gt; 文件系统。&lt;/p&gt;
 
 &lt;p&gt;Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。&lt;/p&gt;
 
-&lt;h3 id=&#34;分层存储:c1314578dde76a3a394a9042c269f756&#34;&gt;分层存储&lt;/h3&gt;
+&lt;h3 id=&#34;分层存储&#34;&gt;分层存储&lt;/h3&gt;
 
 &lt;p&gt;因为镜像包含操作系统完整的 &lt;code&gt;root&lt;/code&gt; 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 &lt;a href=&#34;https://en.wikipedia.org/wiki/Union_mount&#34;&gt;Union FS&lt;/a&gt; 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。&lt;/p&gt;
 
@@ -290,7 +472,7 @@ trusting_newton
 
 &lt;p&gt;关于镜像构建，将会在后续相关章节中做进一步的讲解。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-容器:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 容器&lt;/h2&gt;
+&lt;h2 id=&#34;docker-容器&#34;&gt;Docker 容器&lt;/h2&gt;
 
 &lt;p&gt;镜像（&lt;code&gt;Image&lt;/code&gt;）和容器（&lt;code&gt;Container&lt;/code&gt;）的关系，就像是面向对象程序设计中的 &lt;code&gt;类&lt;/code&gt; 和 &lt;code&gt;实例&lt;/code&gt; 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。&lt;/p&gt;
 
@@ -304,7 +486,7 @@ trusting_newton
 
 &lt;p&gt;数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry&lt;/h2&gt;
+&lt;h2 id=&#34;docker-registry&#34;&gt;Docker Registry&lt;/h2&gt;
 
 &lt;p&gt;镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，&lt;a href=&#34;../repository/registry.md&#34;&gt;Docker Registry&lt;/a&gt; 就是这样的服务。&lt;/p&gt;
 
@@ -316,7 +498,7 @@ trusting_newton
 
 &lt;p&gt;仓库名经常以 &lt;em&gt;两段式路径&lt;/em&gt; 形式出现，比如 &lt;code&gt;jwilder/nginx-proxy&lt;/code&gt;，前者往往意味着 Docker Registry 多用户环境下的用户名，后者则往往是对应的软件名。但这并非绝对，取决于所使用的具体 Docker Registry 的软件或服务。&lt;/p&gt;
 
-&lt;h3 id=&#34;docker-registry-公开服务:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry 公开服务&lt;/h3&gt;
+&lt;h3 id=&#34;docker-registry-公开服务&#34;&gt;Docker Registry 公开服务&lt;/h3&gt;
 
 &lt;p&gt;Docker Registry 公开服务是开放给用户使用、允许用户管理镜像的 Registry 服务。一般这类公开服务允许用户免费上传、下载公开的镜像，并可能提供收费服务供用户管理私有镜像。&lt;/p&gt;
 
@@ -326,7 +508,7 @@ trusting_newton
 
 &lt;p&gt;国内也有一些云服务商提供类似于 Docker Hub 的公开服务。比如 &lt;a href=&#34;https://hub.tenxcloud.com/&#34;&gt;时速云镜像仓库&lt;/a&gt;、&lt;a href=&#34;https://c.163.com/hub#/m/library/&#34;&gt;网易云镜像服务&lt;/a&gt;、&lt;a href=&#34;https://hub.daocloud.io/&#34;&gt;DaoCloud 镜像市场&lt;/a&gt;、&lt;a href=&#34;https://cr.console.aliyun.com&#34;&gt;阿里云镜像库&lt;/a&gt; 等。&lt;/p&gt;
 
-&lt;h3 id=&#34;私有-docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;私有 Docker Registry&lt;/h3&gt;
+&lt;h3 id=&#34;私有-docker-registry&#34;&gt;私有 Docker Registry&lt;/h3&gt;
 
 &lt;p&gt;除了使用公开服务外，用户还可以在本地搭建私有 Docker Registry。Docker 官方提供了 &lt;a href=&#34;https://hub.docker.com/_/registry/&#34;&gt;Docker Registry&lt;/a&gt; 镜像，可以直接使用做为私有 Registry 服务。在 &lt;a href=&#34;../repository/registry.md&#34;&gt;私有仓库&lt;/a&gt; 一节中，会有进一步的搭建私有 Registry 服务的讲解。&lt;/p&gt;
 
@@ -334,23 +516,23 @@ trusting_newton
 
 &lt;p&gt;除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，&lt;a href=&#34;https://github.com/goharbor/harbor&#34;&gt;Harbor&lt;/a&gt; 和 &lt;a href=&#34;../repository/nexus3_registry.md&#34;&gt;Sonatype Nexus&lt;/a&gt;。&lt;/p&gt;
 
-&lt;h2 id=&#34;为什么要使用-docker:c1314578dde76a3a394a9042c269f756&#34;&gt;为什么要使用 Docker？&lt;/h2&gt;
+&lt;h2 id=&#34;为什么要使用-docker&#34;&gt;为什么要使用 Docker？&lt;/h2&gt;
 
 &lt;p&gt;作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势。&lt;/p&gt;
 
-&lt;h3 id=&#34;更高效的利用系统资源:c1314578dde76a3a394a9042c269f756&#34;&gt;更高效的利用系统资源&lt;/h3&gt;
+&lt;h3 id=&#34;更高效的利用系统资源&#34;&gt;更高效的利用系统资源&lt;/h3&gt;
 
 &lt;p&gt;由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。&lt;/p&gt;
 
-&lt;h3 id=&#34;更快速的启动时间:c1314578dde76a3a394a9042c269f756&#34;&gt;更快速的启动时间&lt;/h3&gt;
+&lt;h3 id=&#34;更快速的启动时间&#34;&gt;更快速的启动时间&lt;/h3&gt;
 
 &lt;p&gt;传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。&lt;/p&gt;
 
-&lt;h3 id=&#34;一致的运行环境:c1314578dde76a3a394a9042c269f756&#34;&gt;一致的运行环境&lt;/h3&gt;
+&lt;h3 id=&#34;一致的运行环境&#34;&gt;一致的运行环境&lt;/h3&gt;
 
 &lt;p&gt;开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 &lt;em&gt;「这段代码在我机器上没问题啊」&lt;/em&gt; 这类问题。&lt;/p&gt;
 
-&lt;h3 id=&#34;持续交付和部署:c1314578dde76a3a394a9042c269f756&#34;&gt;持续交付和部署&lt;/h3&gt;
+&lt;h3 id=&#34;持续交付和部署&#34;&gt;持续交付和部署&lt;/h3&gt;
 
 &lt;p&gt;对开发和运维（&lt;a href=&#34;https://zh.wikipedia.org/wiki/DevOps&#34;&gt;DevOps&lt;/a&gt;）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。&lt;/p&gt;
 
@@ -358,15 +540,15 @@ trusting_newton
 
 &lt;p&gt;而且使用 &lt;code&gt;Dockerfile&lt;/code&gt; 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;更轻松的迁移:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的迁移&lt;/h3&gt;
+&lt;h3 id=&#34;更轻松的迁移&#34;&gt;更轻松的迁移&lt;/h3&gt;
 
 &lt;p&gt;由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云，甚至是笔记本，其运行结果是一致的。因此用户可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况。&lt;/p&gt;
 
-&lt;h3 id=&#34;更轻松的维护和扩展:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的维护和扩展&lt;/h3&gt;
+&lt;h3 id=&#34;更轻松的维护和扩展&#34;&gt;更轻松的维护和扩展&lt;/h3&gt;
 
 &lt;p&gt;Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的 &lt;a href=&#34;https://hub.docker.com/search/?type=image&amp;amp;image_filter=official&#34;&gt;官方镜像&lt;/a&gt;，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。&lt;/p&gt;
 
-&lt;h3 id=&#34;对比传统虚拟机总结:c1314578dde76a3a394a9042c269f756&#34;&gt;对比传统虚拟机总结&lt;/h3&gt;
+&lt;h3 id=&#34;对比传统虚拟机总结&#34;&gt;对比传统虚拟机总结&lt;/h3&gt;
 
 &lt;table&gt;
 &lt;thead&gt;
@@ -416,7 +598,7 @@ trusting_newton
       <guid>https://bibo19842003.github.io/docker/dockerfile/</guid>
       <description>
 
-&lt;h2 id=&#34;使用-dockerfile-定制镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
+&lt;h2 id=&#34;使用-dockerfile-定制镜像&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
 
 &lt;p&gt;从刚才的 &lt;code&gt;docker commit&lt;/code&gt; 的学习中，我们可以了解到，镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。&lt;/p&gt;
 
@@ -439,7 +621,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;这个 Dockerfile 很简单，一共就两行。涉及到了两条指令，&lt;code&gt;FROM&lt;/code&gt; 和 &lt;code&gt;RUN&lt;/code&gt;。&lt;/p&gt;
 
-&lt;h3 id=&#34;from-指定基础镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
+&lt;h3 id=&#34;from-指定基础镜像&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
 
 &lt;p&gt;所谓定制镜像，那一定是以一个镜像为基础，在其上进行定制。就像我们之前运行了一个 &lt;code&gt;nginx&lt;/code&gt; 镜像的容器，再进行修改一样，基础镜像是必须指定的。而 &lt;code&gt;FROM&lt;/code&gt; 就是指定 &lt;strong&gt;基础镜像&lt;/strong&gt;，因此一个 &lt;code&gt;Dockerfile&lt;/code&gt; 中 &lt;code&gt;FROM&lt;/code&gt; 是必备的指令，并且必须是第一条指令。&lt;/p&gt;
 
@@ -457,7 +639,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，比如 &lt;a href=&#34;https://hub.docker.com/_/swarm/&#34;&gt;&lt;code&gt;swarm&lt;/code&gt;&lt;/a&gt;、&lt;a href=&#34;https://quay.io/repository/coreos/etcd&#34;&gt;&lt;code&gt;coreos/etcd&lt;/code&gt;&lt;/a&gt;。对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 &lt;code&gt;FROM scratch&lt;/code&gt; 会让镜像体积更加小巧。使用 &lt;a href=&#34;https://golang.org/&#34;&gt;Go 语言&lt;/a&gt; 开发的应用很多会使用这种方式来制作镜像，这也是为什么有人认为 Go 是特别适合容器微服务架构的语言的原因之一。&lt;/p&gt;
 
-&lt;h3 id=&#34;run-执行命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;RUN 执行命令&lt;/h3&gt;
+&lt;h3 id=&#34;run-执行命令&#34;&gt;RUN 执行命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;RUN&lt;/code&gt; 指令是用来执行命令行命令的。由于命令行的强大能力，&lt;code&gt;RUN&lt;/code&gt; 指令在定制镜像时是最常用的指令之一。其格式有两种：&lt;/p&gt;
 
@@ -518,7 +700,7 @@ RUN buildDeps=&#39;gcc libc6-dev make wget&#39; \
 
 &lt;p&gt;很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件。&lt;/p&gt;
 
-&lt;h3 id=&#34;构建镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;构建镜像&lt;/h3&gt;
+&lt;h3 id=&#34;构建镜像&#34;&gt;构建镜像&lt;/h3&gt;
 
 &lt;p&gt;好了，让我们再回到之前定制的 nginx 镜像的 Dockerfile 来。现在我们明白了这个 Dockerfile 的内容，那么让我们来构建这个镜像吧。&lt;/p&gt;
 
@@ -544,7 +726,7 @@ Successfully built 44aa4490ce2c
 
 &lt;p&gt;在这里我们指定了最终镜像的名称 &lt;code&gt;-t nginx:v3&lt;/code&gt;，构建成功后，我们可以像之前运行 &lt;code&gt;nginx:v2&lt;/code&gt; 那样来运行这个镜像，其结果会和 &lt;code&gt;nginx:v2&lt;/code&gt; 一样。&lt;/p&gt;
 
-&lt;h3 id=&#34;镜像构建上下文-context:13a98cce61a7c185eb25fd01e8410188&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
+&lt;h3 id=&#34;镜像构建上下文-context&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
 
 &lt;p&gt;如果注意，会看到 &lt;code&gt;docker build&lt;/code&gt; 命令最后有一个 &lt;code&gt;.&lt;/code&gt;。&lt;code&gt;.&lt;/code&gt; 表示当前目录，而 &lt;code&gt;Dockerfile&lt;/code&gt; 就在当前目录，因此不少初学者以为这个路径是在指定 &lt;code&gt;Dockerfile&lt;/code&gt; 所在路径，这么理解其实是不准确的。如果对应上面的命令格式，你可能会发现，这是在指定 &lt;strong&gt;上下文路径&lt;/strong&gt;。那么什么是上下文呢？&lt;/p&gt;
 
@@ -582,9 +764,9 @@ Sending build context to Docker daemon 2.048 kB
 
 &lt;p&gt;当然，一般大家习惯性的会使用默认的文件名 &lt;code&gt;Dockerfile&lt;/code&gt;，以及会将其置于镜像构建上下文目录中。&lt;/p&gt;
 
-&lt;h3 id=&#34;其它-docker-build-的用法:13a98cce61a7c185eb25fd01e8410188&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
+&lt;h3 id=&#34;其它-docker-build-的用法&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
 
-&lt;h4 id=&#34;直接用-git-repo-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;直接用-git-repo-进行构建&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
 
 &lt;p&gt;或许你已经注意到了，&lt;code&gt;docker build&lt;/code&gt; 还支持从 URL 构建，比如可以直接从 Git repo 中构建：&lt;/p&gt;
 
@@ -600,14 +782,14 @@ aed15891ba52: Already exists
 
 &lt;p&gt;这行命令指定了构建所需的 Git repo，并且指定默认的 &lt;code&gt;master&lt;/code&gt; 分支，构建目录为 &lt;code&gt;/11.1/&lt;/code&gt;，然后 Docker 就会自己去 &lt;code&gt;git clone&lt;/code&gt; 这个项目、切换到指定分支、并进入到指定目录后开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;用给定的-tar-压缩包构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
+&lt;h4 id=&#34;用给定的-tar-压缩包构建&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build http://server/context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果所给出的 URL 不是个 Git repo，而是个 &lt;code&gt;tar&lt;/code&gt; 压缩包，那么 Docker 引擎会下载这个包，并自动解压缩，以其作为上下文，开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker build - &amp;lt; Dockerfile
 &lt;/code&gt;&lt;/pre&gt;
@@ -619,18 +801,18 @@ aed15891ba52: Already exists
 
 &lt;p&gt;如果标准输入传入的是文本文件，则将其视为 &lt;code&gt;Dockerfile&lt;/code&gt;，并开始构建。这种形式由于直接从标准输入中读取 Dockerfile 的内容，它没有上下文，因此不可以像其他方法那样可以将本地文件 &lt;code&gt;COPY&lt;/code&gt; 进镜像之类的事情。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build - &amp;lt; context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果发现标准输入的文件格式是 &lt;code&gt;gzip&lt;/code&gt;、&lt;code&gt;bzip2&lt;/code&gt; 以及 &lt;code&gt;xz&lt;/code&gt; 的话，将会使其为上下文压缩包，直接将其展开，将里面视为上下文，并开始构建。&lt;/p&gt;
 
-&lt;h2 id=&#34;dockerfile-指令详解:13a98cce61a7c185eb25fd01e8410188&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
+&lt;h2 id=&#34;dockerfile-指令详解&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
 
 &lt;p&gt;我们已经介绍了 &lt;code&gt;FROM&lt;/code&gt;，&lt;code&gt;RUN&lt;/code&gt;，还提及了 &lt;code&gt;COPY&lt;/code&gt;, &lt;code&gt;ADD&lt;/code&gt;，其实 &lt;code&gt;Dockerfile&lt;/code&gt; 功能很强大，它提供了十多个指令。下面我们继续讲解其他的指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;copy-复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;COPY 复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;copy-复制文件&#34;&gt;COPY 复制文件&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -664,7 +846,7 @@ COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;add-更高级的复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;add-更高级的复制文件&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ADD&lt;/code&gt; 指令和 &lt;code&gt;COPY&lt;/code&gt; 的格式和性质基本一致。但是在 &lt;code&gt;COPY&lt;/code&gt; 基础上增加了一些功能。&lt;/p&gt;
 
@@ -695,7 +877,7 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;cmd-容器启动命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
+&lt;h3 id=&#34;cmd-容器启动命令&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;CMD&lt;/code&gt; 指令的格式和 &lt;code&gt;RUN&lt;/code&gt; 相似，也是两种格式：&lt;/p&gt;
 
@@ -743,7 +925,7 @@ ADD --chown=10:11 files* /mydir/
 &lt;pre&gt;&lt;code class=&#34;language-Dockerfile&#34;&gt;CMD [&amp;quot;nginx&amp;quot;, &amp;quot;-g&amp;quot;, &amp;quot;daemon off;&amp;quot;]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;entrypoint-入口点:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
+&lt;h3 id=&#34;entrypoint-入口点&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt; 的格式和 &lt;code&gt;RUN&lt;/code&gt; 指令格式一样，分为 &lt;code&gt;exec&lt;/code&gt; 格式和 &lt;code&gt;shell&lt;/code&gt; 格式。&lt;/p&gt;
 
@@ -756,7 +938,7 @@ ADD --chown=10:11 files* /mydir/
 
 &lt;p&gt;那么有了 &lt;code&gt;CMD&lt;/code&gt; 后，为什么还要有 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 呢？这种 &lt;code&gt;&amp;lt;ENTRYPOINT&amp;gt; &amp;quot;&amp;lt;CMD&amp;gt;&amp;quot;&lt;/code&gt; 有什么好处么？让我们来看几个场景。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
+&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
 
 &lt;p&gt;假设我们需要一个得知自己当前公网 IP 的镜像，那么可以先用 &lt;code&gt;CMD&lt;/code&gt; 来实现：&lt;/p&gt;
 
@@ -819,7 +1001,7 @@ Connection: keep-alive
 
 &lt;p&gt;可以看到，这次成功了。这是因为当存在 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 后，&lt;code&gt;CMD&lt;/code&gt; 的内容将会作为参数传给 &lt;code&gt;ENTRYPOINT&lt;/code&gt;，而这里 &lt;code&gt;-i&lt;/code&gt; 就是新的 &lt;code&gt;CMD&lt;/code&gt;，因此会作为参数传给 &lt;code&gt;curl&lt;/code&gt;，从而达到了我们预期的效果。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景二-应用运行前的准备工作:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
+&lt;h4 id=&#34;场景二-应用运行前的准备工作&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
 
 &lt;p&gt;启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作。&lt;/p&gt;
 
@@ -858,7 +1040,7 @@ exec &amp;quot;$@&amp;quot;
 uid=0(root) gid=0(root) groups=0(root)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;env-设置环境变量:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
+&lt;h3 id=&#34;env-设置环境变量&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
 
 &lt;p&gt;格式有两种：&lt;/p&gt;
 
@@ -894,7 +1076,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 &lt;code&gt;Dockerfile&lt;/code&gt; 制作更多的镜像，只需使用不同的环境变量即可。&lt;/p&gt;
 
-&lt;h3 id=&#34;arg-构建参数:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ARG 构建参数&lt;/h3&gt;
+&lt;h3 id=&#34;arg-构建参数&#34;&gt;ARG 构建参数&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ARG &amp;lt;参数名&amp;gt;[=&amp;lt;默认值&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -904,7 +1086,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在 1.13 之前的版本，要求 &lt;code&gt;--build-arg&lt;/code&gt; 中的参数名，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中用 &lt;code&gt;ARG&lt;/code&gt; 定义过了，换句话说，就是 &lt;code&gt;--build-arg&lt;/code&gt; 指定的参数，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 &lt;code&gt;Dockerfile&lt;/code&gt; 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。&lt;/p&gt;
 
-&lt;h3 id=&#34;volume-定义匿名卷:13a98cce61a7c185eb25fd01e8410188&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
+&lt;h3 id=&#34;volume-定义匿名卷&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
 
 &lt;p&gt;格式为：&lt;/p&gt;
 
@@ -925,7 +1107,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在这行命令中，就使用了 &lt;code&gt;mydata&lt;/code&gt; 这个命名卷挂载到了 &lt;code&gt;/data&lt;/code&gt; 这个位置，替代了 &lt;code&gt;Dockerfile&lt;/code&gt; 中定义的匿名卷的挂载配置。&lt;/p&gt;
 
-&lt;h3 id=&#34;expose-声明端口:13a98cce61a7c185eb25fd01e8410188&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
+&lt;h3 id=&#34;expose-声明端口&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;EXPOSE &amp;lt;端口1&amp;gt; [&amp;lt;端口2&amp;gt;...]&lt;/code&gt;。&lt;/p&gt;
 
@@ -933,7 +1115,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;要将 &lt;code&gt;EXPOSE&lt;/code&gt; 和在运行时使用 &lt;code&gt;-p &amp;lt;宿主端口&amp;gt;:&amp;lt;容器端口&amp;gt;&lt;/code&gt; 区分开来。&lt;code&gt;-p&lt;/code&gt;，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 &lt;code&gt;EXPOSE&lt;/code&gt; 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。&lt;/p&gt;
 
-&lt;h3 id=&#34;workdir-指定工作目录:13a98cce61a7c185eb25fd01e8410188&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
+&lt;h3 id=&#34;workdir-指定工作目录&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;WORKDIR &amp;lt;工作目录路径&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -951,7 +1133,7 @@ RUN echo &amp;quot;hello&amp;quot; &amp;gt; world.txt
 
 &lt;p&gt;因此如果需要改变以后各层的工作目录的位置，那么应该使用 &lt;code&gt;WORKDIR&lt;/code&gt; 指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;user-指定当前用户:13a98cce61a7c185eb25fd01e8410188&#34;&gt;USER 指定当前用户&lt;/h3&gt;
+&lt;h3 id=&#34;user-指定当前用户&#34;&gt;USER 指定当前用户&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;USER &amp;lt;用户名&amp;gt;[:&amp;lt;用户组&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -976,7 +1158,7 @@ RUN wget -O /usr/local/bin/gosu &amp;quot;https://github.com/tianon/gosu/release
 CMD [ &amp;quot;exec&amp;quot;, &amp;quot;gosu&amp;quot;, &amp;quot;redis&amp;quot;, &amp;quot;redis-server&amp;quot; ]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;healthcheck-健康检查:13a98cce61a7c185eb25fd01e8410188&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
+&lt;h3 id=&#34;healthcheck-健康检查&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -1058,7 +1240,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;onbuild-为他人做嫁衣裳:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
+&lt;h3 id=&#34;onbuild-为他人做嫁衣裳&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ONBUILD &amp;lt;其它指令&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -1119,7 +1301,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 
 &lt;p&gt;是的，只有这么一行。当在各个项目目录中，用这个只有一行的 &lt;code&gt;Dockerfile&lt;/code&gt; 构建镜像时，之前基础镜像的那三行 &lt;code&gt;ONBUILD&lt;/code&gt; 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 &lt;code&gt;npm install&lt;/code&gt;，生成应用镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;参考文档:13a98cce61a7c185eb25fd01e8410188&#34;&gt;参考文档&lt;/h3&gt;
+&lt;h3 id=&#34;参考文档&#34;&gt;参考文档&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;code&gt;Dockerfie&lt;/code&gt; 官方文档：&lt;a href=&#34;https://docs.docker.com/engine/reference/builder/&#34;&gt;https://docs.docker.com/engine/reference/builder/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
