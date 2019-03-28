@@ -8,8 +8,1339 @@
     <language>en-EN</language>
     <managingEditor>bibo19842003@163.com (bibo)</managingEditor>
     <webMaster>bibo19842003@163.com (bibo)</webMaster>
-    <lastBuildDate>Thu, 28 Mar 2019 15:04:14 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 28 Mar 2019 15:07:20 +0800</lastBuildDate>
     <atom:link href="https://bibo19842003.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>docker compose</title>
+      <link>https://bibo19842003.github.io/docker/docker-compose/</link>
+      <pubDate>Thu, 28 Mar 2019 15:07:20 +0800</pubDate>
+      <author>bibo19842003@163.com (bibo)</author>
+      <guid>https://bibo19842003.github.io/docker/docker-compose/</guid>
+      <description>
+
+&lt;h2 id=&#34;compose-简介:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;Compose 简介&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 项目是 Docker 官方的开源项目，负责实现对 Docker 容器集群的快速编排。从功能上看，跟 &lt;code&gt;OpenStack&lt;/code&gt; 中的 &lt;code&gt;Heat&lt;/code&gt; 十分类似。&lt;/p&gt;
+
+&lt;p&gt;其代码目前在 &lt;a href=&#34;https://github.com/docker/compose&#34;&gt;https://github.com/docker/compose&lt;/a&gt; 上开源。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 定位是 「定义和运行多个 Docker 容器的应用（Defining and running multi-container Docker applications）」，其前身是开源项目 Fig。&lt;/p&gt;
+
+&lt;p&gt;通过第一部分中的介绍，我们知道使用一个 &lt;code&gt;Dockerfile&lt;/code&gt; 模板文件，可以让用户很方便的定义一个单独的应用容器。然而，在日常工作中，经常会碰到需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器，甚至还包括负载均衡容器等。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 恰好满足了这样的需求。它允许用户通过一个单独的 &lt;code&gt;docker-compose.yml&lt;/code&gt; 模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目（project）。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 中有两个重要的概念：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;服务 (&lt;code&gt;service&lt;/code&gt;)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;项目 (&lt;code&gt;project&lt;/code&gt;)：由一组关联的应用容器组成的一个完整业务单元，在 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件中定义。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 的默认管理对象是项目，通过子命令对项目中的一组容器进行便捷地生命周期管理。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此，只要所操作的平台支持 Docker API，就可以在其上利用 &lt;code&gt;Compose&lt;/code&gt; 来进行编排管理。&lt;/p&gt;
+
+&lt;h2 id=&#34;安装与卸载:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;安装与卸载&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 支持 Linux、macOS、Windows 10 三大平台。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 可以通过 Python 的包管理工具 &lt;code&gt;pip&lt;/code&gt; 进行安装，也可以直接下载编译好的二进制文件使用，甚至能够直接在 Docker 容器中运行。&lt;/p&gt;
+
+&lt;p&gt;前两种方式是传统方式，适合本地环境下安装使用；最后一种方式则不破坏系统环境，更适合云计算场景。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Docker for Mac&lt;/code&gt; 、&lt;code&gt;Docker for Windows&lt;/code&gt; 自带 &lt;code&gt;docker-compose&lt;/code&gt; 二进制文件，安装 Docker 之后可以直接使用。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose --version
+
+docker-compose version 1.17.1, build 6d101fb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Linux 系统请使用以下介绍的方法安装。&lt;/p&gt;
+
+&lt;h3 id=&#34;二进制包:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;二进制包&lt;/h3&gt;
+
+&lt;p&gt;在 Linux 上的也安装十分简单，从 &lt;a href=&#34;https://github.com/docker/compose/releases&#34;&gt;官方 GitHub Release&lt;/a&gt; 处直接下载编译好的二进制文件即可。&lt;/p&gt;
+
+&lt;p&gt;例如，在 Linux 64 位系统上直接下载对应的二进制包。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-`uname -s`-`uname -m` &amp;gt; /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;pip-安装:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;PIP 安装&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;注：&lt;/em&gt; &lt;code&gt;x86_64&lt;/code&gt; 架构的 Linux 建议按照上边的方法下载二进制包进行安装，如果您计算机的架构是 &lt;code&gt;ARM&lt;/code&gt; (例如，树莓派)，再使用 &lt;code&gt;pip&lt;/code&gt; 安装。&lt;/p&gt;
+
+&lt;p&gt;这种方式是将 Compose 当作一个 Python 应用来从 pip 源中安装。&lt;/p&gt;
+
+&lt;p&gt;执行安装命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo pip install -U docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以看到类似如下输出，说明安装成功。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Collecting docker-compose
+  Downloading docker-compose-1.17.1.tar.gz (149kB): 149kB downloaded
+...
+Successfully installed docker-compose cached-property requests texttable websocket-client docker-py dockerpty six enum34 backports.ssl-match-hostname ipaddress
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;bash-补全命令:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;bash 补全命令&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose &amp;gt; /etc/bash_completion.d/docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;容器中执行:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;容器中执行&lt;/h3&gt;
+
+&lt;p&gt;Compose 既然是一个 Python 应用，自然也可以直接用容器来执行它。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ curl -L https://github.com/docker/compose/releases/download/1.8.0/run.sh &amp;gt; /usr/local/bin/docker-compose
+$ chmod +x /usr/local/bin/docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;实际上，查看下载的 &lt;code&gt;run.sh&lt;/code&gt; 脚本内容，如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;set -e
+
+VERSION=&amp;quot;1.8.0&amp;quot;
+IMAGE=&amp;quot;docker/compose:$VERSION&amp;quot;
+
+
+# Setup options for connecting to docker host
+if [ -z &amp;quot;$DOCKER_HOST&amp;quot; ]; then
+    DOCKER_HOST=&amp;quot;/var/run/docker.sock&amp;quot;
+fi
+if [ -S &amp;quot;$DOCKER_HOST&amp;quot; ]; then
+    DOCKER_ADDR=&amp;quot;-v $DOCKER_HOST:$DOCKER_HOST -e DOCKER_HOST&amp;quot;
+else
+    DOCKER_ADDR=&amp;quot;-e DOCKER_HOST -e DOCKER_TLS_VERIFY -e DOCKER_CERT_PATH&amp;quot;
+fi
+
+
+# Setup volume mounts for compose config and context
+if [ &amp;quot;$(pwd)&amp;quot; != &#39;/&#39; ]; then
+    VOLUMES=&amp;quot;-v $(pwd):$(pwd)&amp;quot;
+fi
+if [ -n &amp;quot;$COMPOSE_FILE&amp;quot; ]; then
+    compose_dir=$(dirname $COMPOSE_FILE)
+fi
+# TODO: also check --file argument
+if [ -n &amp;quot;$compose_dir&amp;quot; ]; then
+    VOLUMES=&amp;quot;$VOLUMES -v $compose_dir:$compose_dir&amp;quot;
+fi
+if [ -n &amp;quot;$HOME&amp;quot; ]; then
+    VOLUMES=&amp;quot;$VOLUMES -v $HOME:$HOME -v $HOME:/root&amp;quot; # mount $HOME in /root to share docker.config
+fi
+
+# Only allocate tty if we detect one
+if [ -t 1 ]; then
+    DOCKER_RUN_OPTIONS=&amp;quot;-t&amp;quot;
+fi
+if [ -t 0 ]; then
+    DOCKER_RUN_OPTIONS=&amp;quot;$DOCKER_RUN_OPTIONS -i&amp;quot;
+fi
+
+exec docker run --rm $DOCKER_RUN_OPTIONS $DOCKER_ADDR $COMPOSE_OPTIONS $VOLUMES -w &amp;quot;$(pwd)&amp;quot; $IMAGE &amp;quot;$@&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以看到，它其实是下载了 &lt;code&gt;docker/compose&lt;/code&gt; 镜像并运行。&lt;/p&gt;
+
+&lt;h3 id=&#34;卸载:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;卸载&lt;/h3&gt;
+
+&lt;p&gt;如果是二进制包方式安装的，删除二进制文件即可。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo rm /usr/local/bin/docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果是通过 &lt;code&gt;pip&lt;/code&gt; 安装的，则执行如下命令即可删除。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo pip uninstall docker-compose
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;使用:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;使用&lt;/h2&gt;
+
+&lt;h3 id=&#34;术语:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;术语&lt;/h3&gt;
+
+&lt;p&gt;首先介绍几个术语。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;服务 (&lt;code&gt;service&lt;/code&gt;)：一个应用容器，实际上可以运行多个相同镜像的实例。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;项目 (&lt;code&gt;project&lt;/code&gt;)：由一组关联的应用容器组成的一个完整业务单元。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可见，一个项目可以由多个服务（容器）关联而成，&lt;code&gt;Compose&lt;/code&gt; 面向项目进行管理。&lt;/p&gt;
+
+&lt;h3 id=&#34;场景:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;场景&lt;/h3&gt;
+
+&lt;p&gt;最常见的项目是 web 网站，该项目应该包含 web 应用和缓存。&lt;/p&gt;
+
+&lt;p&gt;下面我们用 &lt;code&gt;Python&lt;/code&gt; 来建立一个能够记录页面访问次数的 web 网站。&lt;/p&gt;
+
+&lt;h4 id=&#34;web-应用:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;web 应用&lt;/h4&gt;
+
+&lt;p&gt;新建文件夹，在该目录中编写 &lt;code&gt;app.py&lt;/code&gt; 文件&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host=&#39;redis&#39;, port=6379)
+
+@app.route(&#39;/&#39;)
+def hello():
+    count = redis.incr(&#39;hits&#39;)
+    return &#39;Hello World! 该页面已被访问 {} 次。\n&#39;.format(count)
+
+if __name__ == &amp;quot;__main__&amp;quot;:
+    app.run(host=&amp;quot;0.0.0.0&amp;quot;, debug=True)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;dockerfile:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;Dockerfile&lt;/h4&gt;
+
+&lt;p&gt;编写 &lt;code&gt;Dockerfile&lt;/code&gt; 文件，内容为&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dockerfile&#34;&gt;FROM python:3.6-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install redis flask
+CMD [&amp;quot;python&amp;quot;, &amp;quot;app.py&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;docker-compose-yml:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;docker-compose.yml&lt;/h4&gt;
+
+&lt;p&gt;编写 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件，这个是 Compose 使用的主模板文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &#39;3&#39;
+services:
+
+  web:
+    build: .
+    ports:
+     - &amp;quot;5000:5000&amp;quot;
+
+  redis:
+    image: &amp;quot;redis:alpine&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;运行-compose-项目:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;运行 compose 项目&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose up
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时访问本地 &lt;code&gt;5000&lt;/code&gt; 端口，每次刷新页面，计数就会加 1。&lt;/p&gt;
+
+&lt;h2 id=&#34;compose-命令说明:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;Compose 命令说明&lt;/h2&gt;
+
+&lt;h3 id=&#34;命令对象与格式:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;命令对象与格式&lt;/h3&gt;
+
+&lt;p&gt;对于 Compose 来说，大部分命令的对象既可以是项目本身，也可以指定为项目中的服务或者容器。如果没有特别的说明，命令对象将是项目，这意味着项目中所有的服务都会受到命令影响。&lt;/p&gt;
+
+&lt;p&gt;执行 &lt;code&gt;docker-compose [COMMAND] --help&lt;/code&gt; 或者 &lt;code&gt;docker-compose help [COMMAND]&lt;/code&gt; 可以查看具体某个命令的使用格式。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;docker-compose&lt;/code&gt; 命令的基本的使用格式是&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker-compose [-f=&amp;lt;arg&amp;gt;...] [options] [COMMAND] [ARGS...]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;命令选项:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;命令选项&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-f, --file FILE&lt;/code&gt; 指定使用的 Compose 模板文件，默认为 &lt;code&gt;docker-compose.yml&lt;/code&gt;，可以多次指定。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-p, --project-name NAME&lt;/code&gt; 指定项目名称，默认将使用所在目录名称作为项目名。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--x-networking&lt;/code&gt; 使用 Docker 的可拔插网络后端特性&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--x-network-driver DRIVER&lt;/code&gt; 指定网络后端的驱动，默认为 &lt;code&gt;bridge&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--verbose&lt;/code&gt; 输出更多调试信息。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-v, --version&lt;/code&gt; 打印版本并退出。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;命令使用说明:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;命令使用说明&lt;/h3&gt;
+
+&lt;h4 id=&#34;build:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;build&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose build [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;构建（重新构建）项目中的服务容器。&lt;/p&gt;
+
+&lt;p&gt;服务容器一旦构建后，将会带上一个标记名，例如对于 web 项目中的一个 db 容器，可能是 web_db。&lt;/p&gt;
+
+&lt;p&gt;可以随时在项目目录下运行 &lt;code&gt;docker-compose build&lt;/code&gt; 来重新构建服务。&lt;/p&gt;
+
+&lt;p&gt;选项包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--force-rm&lt;/code&gt; 删除构建过程中的临时容器。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-cache&lt;/code&gt; 构建镜像过程中不使用 cache（这将加长构建过程）。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--pull&lt;/code&gt; 始终尝试通过 pull 来获取更新版本的镜像。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;config:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;config&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;验证 Compose 文件格式是否正确，若正确则显示配置，若格式错误显示错误原因。&lt;/p&gt;
+
+&lt;h4 id=&#34;down:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;down&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;此命令将会停止 &lt;code&gt;up&lt;/code&gt; 命令所启动的容器，并移除网络&lt;/p&gt;
+
+&lt;h4 id=&#34;exec:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;exec&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;进入指定的容器。&lt;/p&gt;
+
+&lt;h4 id=&#34;help:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;help&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;获得一个命令的帮助。&lt;/p&gt;
+
+&lt;h4 id=&#34;images:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;images&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;列出 Compose 文件中包含的镜像。&lt;/p&gt;
+
+&lt;h4 id=&#34;kill:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;kill&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose kill [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;通过发送 &lt;code&gt;SIGKILL&lt;/code&gt; 信号来强制停止服务容器。&lt;/p&gt;
+
+&lt;p&gt;支持通过 &lt;code&gt;-s&lt;/code&gt; 参数来指定发送的信号，例如通过如下指令发送 &lt;code&gt;SIGINT&lt;/code&gt; 信号。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose kill -s SIGINT
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;logs:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;logs&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose logs [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;查看服务容器的输出。默认情况下，docker-compose 将对不同的服务输出使用不同的颜色来区分。可以通过 &lt;code&gt;--no-color&lt;/code&gt; 来关闭颜色。&lt;/p&gt;
+
+&lt;p&gt;该命令在调试问题的时候十分有用。&lt;/p&gt;
+
+&lt;h4 id=&#34;pause:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;pause&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose pause [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;暂停一个服务容器。&lt;/p&gt;
+
+&lt;h4 id=&#34;port:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;port&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose port [options] SERVICE PRIVATE_PORT&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;打印某个容器端口所映射的公共端口。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--protocol=proto&lt;/code&gt; 指定端口协议，tcp（默认值）或者 udp。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--index=index&lt;/code&gt; 如果同一服务存在多个容器，指定命令对象容器的序号（默认为 1）。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;ps:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;ps&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose ps [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;列出项目中目前的所有容器。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-q&lt;/code&gt; 只打印容器的 ID 信息。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;pull:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;pull&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose pull [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;拉取服务依赖的镜像。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--ignore-pull-failures&lt;/code&gt; 忽略拉取镜像过程中的错误。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;push:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;push&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;推送服务依赖的镜像到 Docker 镜像仓库。&lt;/p&gt;
+
+&lt;h4 id=&#34;restart:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;restart&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose restart [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;重启项目中的服务。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-t, --timeout TIMEOUT&lt;/code&gt; 指定重启前停止容器的超时（默认为 10 秒）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;rm:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;rm&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose rm [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;删除所有（停止状态的）服务容器。推荐先执行 &lt;code&gt;docker-compose stop&lt;/code&gt; 命令来停止容器。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-f, --force&lt;/code&gt; 强制直接删除，包括非停止状态的容器。一般尽量不要使用该选项。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-v&lt;/code&gt; 删除容器所挂载的数据卷。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;run:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;run&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose run [options] [-p PORT...] [-e KEY=VAL...] SERVICE [COMMAND] [ARGS...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;在指定服务上执行一个命令。&lt;/p&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run ubuntu ping docker.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将会启动一个 ubuntu 服务容器，并执行 &lt;code&gt;ping docker.com&lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;p&gt;默认情况下，如果存在关联，则所有关联的服务将会自动被启动，除非这些服务已经在运行中。&lt;/p&gt;
+
+&lt;p&gt;该命令类似启动容器后运行指定的命令，相关卷、链接等等都将会按照配置自动创建。&lt;/p&gt;
+
+&lt;p&gt;两个不同点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;给定命令将会覆盖原有的自动运行命令；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;不会自动创建端口，以避免冲突。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果不希望自动启动关联的容器，可以使用 &lt;code&gt;--no-deps&lt;/code&gt; 选项，例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run --no-deps web python manage.py shell
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将不会启动 web 容器所关联的其它容器。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-d&lt;/code&gt; 后台运行容器。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--name NAME&lt;/code&gt; 为容器指定一个名字。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--entrypoint CMD&lt;/code&gt; 覆盖默认的容器启动指令。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-e KEY=VAL&lt;/code&gt; 设置环境变量值，可多次使用选项来设置多个环境变量。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-u, --user=&amp;quot;&amp;quot;&lt;/code&gt; 指定运行容器的用户名或者 uid。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-deps&lt;/code&gt; 不自动启动关联的服务容器。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--rm&lt;/code&gt; 运行命令后自动删除容器，&lt;code&gt;d&lt;/code&gt; 模式下将忽略。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-p, --publish=[]&lt;/code&gt; 映射容器端口到本地主机。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--service-ports&lt;/code&gt; 配置服务端口并映射到本地主机。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-T&lt;/code&gt; 不分配伪 tty，意味着依赖 tty 的指令将无法运行。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;scale:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;scale&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose scale [options] [SERVICE=NUM...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;设置指定服务运行的容器个数。&lt;/p&gt;
+
+&lt;p&gt;通过 &lt;code&gt;service=num&lt;/code&gt; 的参数来设置数量。例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose scale web=3 db=2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将启动 3 个容器运行 web 服务，2 个容器运行 db 服务。&lt;/p&gt;
+
+&lt;p&gt;一般的，当指定数目多于该服务当前实际运行容器，将新创建并启动容器；反之，将停止容器。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-t, --timeout TIMEOUT&lt;/code&gt; 停止容器时候的超时（默认为 10 秒）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;start:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;start&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose start [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;启动已经存在的服务容器。&lt;/p&gt;
+
+&lt;h4 id=&#34;stop:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;stop&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose stop [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;停止已经处于运行状态的容器，但不删除它。通过 &lt;code&gt;docker-compose start&lt;/code&gt; 可以再次启动这些容器。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-t, --timeout TIMEOUT&lt;/code&gt; 停止容器时候的超时（默认为 10 秒）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;top:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;top&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;查看各个服务容器内运行的进程。&lt;/p&gt;
+
+&lt;h4 id=&#34;unpause:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;unpause&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose unpause [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;恢复处于暂停状态中的服务。&lt;/p&gt;
+
+&lt;h4 id=&#34;up:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;up&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose up [options] [SERVICE...]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;该命令十分强大，它将尝试自动完成包括构建镜像，（重新）创建服务，启动服务，并关联服务相关容器的一系列操作。&lt;/p&gt;
+
+&lt;p&gt;链接的服务都将会被自动启动，除非已经处于运行状态。&lt;/p&gt;
+
+&lt;p&gt;可以说，大部分时候都可以直接通过该命令来启动一个项目。&lt;/p&gt;
+
+&lt;p&gt;默认情况，&lt;code&gt;docker-compose up&lt;/code&gt; 启动的容器都在前台，控制台将会同时打印所有容器的输出信息，可以很方便进行调试。&lt;/p&gt;
+
+&lt;p&gt;当通过 &lt;code&gt;Ctrl-C&lt;/code&gt; 停止命令时，所有容器将会停止。&lt;/p&gt;
+
+&lt;p&gt;如果使用 &lt;code&gt;docker-compose up -d&lt;/code&gt;，将会在后台启动并运行所有的容器。一般推荐生产环境下使用该选项。&lt;/p&gt;
+
+&lt;p&gt;默认情况，如果服务容器已经存在，&lt;code&gt;docker-compose up&lt;/code&gt; 将会尝试停止容器，然后重新创建（保持使用 &lt;code&gt;volumes-from&lt;/code&gt; 挂载的卷），以保证新启动的服务匹配 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件的最新内容。如果用户不希望容器被停止并重新创建，可以使用 &lt;code&gt;docker-compose up --no-recreate&lt;/code&gt;。这样将只会启动处于停止状态的容器，而忽略已经运行的服务。如果用户只想重新部署某个服务，可以使用 &lt;code&gt;docker-compose up --no-deps -d &amp;lt;SERVICE_NAME&amp;gt;&lt;/code&gt; 来重新创建服务并后台停止旧服务，启动新服务，并不会影响到其所依赖的服务。&lt;/p&gt;
+
+&lt;p&gt;选项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-d&lt;/code&gt; 在后台运行服务容器。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-color&lt;/code&gt; 不使用颜色来区分不同的服务的控制台输出。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-deps&lt;/code&gt; 不启动服务所链接的容器。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--force-recreate&lt;/code&gt; 强制重新创建容器，不能与 &lt;code&gt;--no-recreate&lt;/code&gt; 同时使用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-recreate&lt;/code&gt; 如果容器已经存在了，则不重新创建，不能与 &lt;code&gt;--force-recreate&lt;/code&gt; 同时使用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;--no-build&lt;/code&gt; 不自动构建缺失的服务镜像。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;-t, --timeout TIMEOUT&lt;/code&gt; 停止容器时候的超时（默认为 10 秒）。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;version:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;version&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;格式为 &lt;code&gt;docker-compose version&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;打印版本信息。&lt;/p&gt;
+
+&lt;h2 id=&#34;compose-模板文件:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;Compose 模板文件&lt;/h2&gt;
+
+&lt;p&gt;模板文件是使用 &lt;code&gt;Compose&lt;/code&gt; 的核心，涉及到的指令关键字也比较多。但大家不用担心，这里面大部分指令跟 &lt;code&gt;docker run&lt;/code&gt; 相关参数的含义都是类似的。&lt;/p&gt;
+
+&lt;p&gt;默认的模板文件名称为 &lt;code&gt;docker-compose.yml&lt;/code&gt;，格式为 YAML 格式。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+
+services:
+  webapp:
+    image: examples/web
+    ports:
+      - &amp;quot;80:80&amp;quot;
+    volumes:
+      - &amp;quot;/data&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意每个服务都必须通过 &lt;code&gt;image&lt;/code&gt; 指令指定镜像或 &lt;code&gt;build&lt;/code&gt; 指令（需要 Dockerfile）等来自动构建生成镜像。&lt;/p&gt;
+
+&lt;p&gt;如果使用 &lt;code&gt;build&lt;/code&gt; 指令，在 &lt;code&gt;Dockerfile&lt;/code&gt; 中设置的选项(例如：&lt;code&gt;CMD&lt;/code&gt;, &lt;code&gt;EXPOSE&lt;/code&gt;, &lt;code&gt;VOLUME&lt;/code&gt;, &lt;code&gt;ENV&lt;/code&gt; 等) 将会自动被获取，无需在 &lt;code&gt;docker-compose.yml&lt;/code&gt; 中再次设置。&lt;/p&gt;
+
+&lt;p&gt;下面分别介绍各个指令的用法。&lt;/p&gt;
+
+&lt;h3 id=&#34;build-1:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;build&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定 &lt;code&gt;Dockerfile&lt;/code&gt; 所在文件夹的路径（可以是绝对路径，或者相对 docker-compose.yml 文件的路径）。 &lt;code&gt;Compose&lt;/code&gt; 将会利用它自动构建这个镜像，然后使用这个镜像。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &#39;3&#39;
+services:
+
+  webapp:
+    build: ./dir
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;你也可以使用 &lt;code&gt;context&lt;/code&gt; 指令指定 &lt;code&gt;Dockerfile&lt;/code&gt; 所在文件夹的路径。&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;code&gt;dockerfile&lt;/code&gt; 指令指定 &lt;code&gt;Dockerfile&lt;/code&gt; 文件名。&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;code&gt;arg&lt;/code&gt; 指令指定构建镜像时的变量。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &#39;3&#39;
+services:
+
+  webapp:
+    build:
+      context: ./dir
+      dockerfile: Dockerfile-alternate
+      args:
+        buildno: 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用 &lt;code&gt;cache_from&lt;/code&gt; 指定构建镜像的缓存&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;build:
+  context: .
+  cache_from:
+    - alpine:latest
+    - corp/web_app:3.14
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;cap-add-cap-drop:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;cap_add, cap_drop&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定容器的内核能力（capacity）分配。&lt;/p&gt;
+
+&lt;p&gt;例如，让容器拥有所有能力可以指定为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;cap_add:
+  - ALL
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;去掉 NET_ADMIN 能力可以指定为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;cap_drop:
+  - NET_ADMIN
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;command:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;command&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;覆盖容器启动后默认执行的命令。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;command: echo &amp;quot;hello world&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;configs:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;configs&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;仅用于 &lt;code&gt;Swarm mode&lt;/code&gt;，详细内容请查看 &lt;a href=&#34;../swarm_mode/&#34;&gt;&lt;code&gt;Swarm mode&lt;/code&gt;&lt;/a&gt; 一节。&lt;/p&gt;
+
+&lt;h3 id=&#34;cgroup-parent:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;cgroup_parent&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定父 &lt;code&gt;cgroup&lt;/code&gt; 组，意味着将继承该组的资源限制。&lt;/p&gt;
+
+&lt;p&gt;例如，创建了一个 cgroup 组名称为 &lt;code&gt;cgroups_1&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;cgroup_parent: cgroups_1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;container-name:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;container_name&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定容器名称。默认将会使用 &lt;code&gt;项目名称_服务名称_序号&lt;/code&gt; 这样的格式。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;container_name: docker-web-container
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注意: 指定容器名称后，该服务将无法进行扩展（scale），因为 Docker 不允许多个容器具有相同的名称。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;deploy:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;deploy&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;仅用于 &lt;code&gt;Swarm mode&lt;/code&gt;，详细内容请查看 &lt;a href=&#34;../swarm_mode/&#34;&gt;&lt;code&gt;Swarm mode&lt;/code&gt;&lt;/a&gt; 一节&lt;/p&gt;
+
+&lt;h3 id=&#34;devices:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;devices&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定设备映射关系。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;devices:
+  - &amp;quot;/dev/ttyUSB1:/dev/ttyUSB0&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;depends-on:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;depends_on&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;解决容器的依赖、启动先后的问题。以下例子中会先启动 &lt;code&gt;redis&lt;/code&gt; &lt;code&gt;db&lt;/code&gt; 再启动 &lt;code&gt;web&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &#39;3&#39;
+
+services:
+  web:
+    build: .
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis
+
+  db:
+    image: postgres
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注意：&lt;code&gt;web&lt;/code&gt; 服务不会等待 &lt;code&gt;redis&lt;/code&gt; &lt;code&gt;db&lt;/code&gt; 「完全启动」之后才启动。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;dns:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;dns&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;自定义 &lt;code&gt;DNS&lt;/code&gt; 服务器。可以是一个值，也可以是一个列表。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;dns: 8.8.8.8
+
+dns:
+  - 8.8.8.8
+  - 114.114.114.114
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;dns-search:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;dns_search&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;配置 &lt;code&gt;DNS&lt;/code&gt; 搜索域。可以是一个值，也可以是一个列表。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;dns_search: example.com
+
+dns_search:
+  - domain1.example.com
+  - domain2.example.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;tmpfs:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;tmpfs&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;挂载一个 tmpfs 文件系统到容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;tmpfs: /run
+tmpfs:
+  - /run
+  - /tmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;env-file:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;env_file&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;从文件中获取环境变量，可以为单独的文件路径或列表。&lt;/p&gt;
+
+&lt;p&gt;如果通过 &lt;code&gt;docker-compose -f FILE&lt;/code&gt; 方式来指定 Compose 模板文件，则 &lt;code&gt;env_file&lt;/code&gt; 中变量的路径会基于模板文件路径。&lt;/p&gt;
+
+&lt;p&gt;如果有变量名称与 &lt;code&gt;environment&lt;/code&gt; 指令冲突，则按照惯例，以后者为准。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;env_file: .env
+
+env_file:
+  - ./common.env
+  - ./apps/web.env
+  - /opt/secrets.env
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;环境变量文件中每一行必须符合格式，支持 &lt;code&gt;#&lt;/code&gt; 开头的注释行。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# common.env: Set development environment
+PROG_ENV=development
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;environment:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;environment&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;设置环境变量。你可以使用数组或字典两种格式。&lt;/p&gt;
+
+&lt;p&gt;只给定名称的变量会自动获取运行 Compose 主机上对应变量的值，可以用来防止泄露不必要的数据。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;environment:
+  RACK_ENV: development
+  SESSION_SECRET:
+
+environment:
+  - RACK_ENV=development
+  - SESSION_SECRET
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果变量名称或者值中用到 &lt;code&gt;true|false，yes|no&lt;/code&gt; 等表达 &lt;a href=&#34;https://yaml.org/type/bool.html&#34;&gt;布尔&lt;/a&gt; 含义的词汇，最好放到引号里，避免 YAML 自动解析某些内容为对应的布尔语义。这些特定词汇，包括&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;expose:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;expose&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;暴露端口，但不映射到宿主机，只被连接的服务访问。&lt;/p&gt;
+
+&lt;p&gt;仅可以指定内部端口为参数&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;expose:
+ - &amp;quot;3000&amp;quot;
+ - &amp;quot;8000&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;external-links:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;external_links&lt;/code&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注意：不建议使用该指令。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;链接到 &lt;code&gt;docker-compose.yml&lt;/code&gt; 外部的容器，甚至并非 &lt;code&gt;Compose&lt;/code&gt; 管理的外部容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;external_links:
+ - redis_1
+ - project_db_1:mysql
+ - project_db_1:postgresql
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;extra-hosts:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;extra_hosts&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;类似 Docker 中的 &lt;code&gt;--add-host&lt;/code&gt; 参数，指定额外的 host 名称映射信息。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;extra_hosts:
+ - &amp;quot;googledns:8.8.8.8&amp;quot;
+ - &amp;quot;dockerhub:52.1.157.61&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;会在启动后的服务容器中 &lt;code&gt;/etc/hosts&lt;/code&gt; 文件中添加如下两条条目。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;8.8.8.8 googledns
+52.1.157.61 dockerhub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;healthcheck:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;healthcheck&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;通过命令检查容器是否健康运行。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;healthcheck:
+  test: [&amp;quot;CMD&amp;quot;, &amp;quot;curl&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;http://localhost&amp;quot;]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;image:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;image&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定为镜像名称或镜像 ID。如果镜像在本地不存在，&lt;code&gt;Compose&lt;/code&gt; 将会尝试拉取这个镜像。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;image: ubuntu
+image: orchardup/postgresql
+image: a4bc65fd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;labels:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;labels&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;为容器添加 Docker 元数据（metadata）信息。例如可以为容器添加辅助说明信息。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;labels:
+  com.startupteam.description: &amp;quot;webapp for a startup team&amp;quot;
+  com.startupteam.department: &amp;quot;devops department&amp;quot;
+  com.startupteam.release: &amp;quot;rc3 for v1.0&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;links:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;links&lt;/code&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注意：不推荐使用该指令。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;logging:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;logging&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;配置日志选项。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;logging:
+  driver: syslog
+  options:
+    syslog-address: &amp;quot;tcp://192.168.0.42:123&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;目前支持三种日志驱动类型。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;driver: &amp;quot;json-file&amp;quot;
+driver: &amp;quot;syslog&amp;quot;
+driver: &amp;quot;none&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;options&lt;/code&gt; 配置日志驱动的相关参数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;options:
+  max-size: &amp;quot;200k&amp;quot;
+  max-file: &amp;quot;10&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;network-mode:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;network_mode&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;设置网络模式。使用和 &lt;code&gt;docker run&lt;/code&gt; 的 &lt;code&gt;--network&lt;/code&gt; 参数一样的值。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;network_mode: &amp;quot;bridge&amp;quot;
+network_mode: &amp;quot;host&amp;quot;
+network_mode: &amp;quot;none&amp;quot;
+network_mode: &amp;quot;service:[service name]&amp;quot;
+network_mode: &amp;quot;container:[container name/id]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;networks:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;networks&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;配置容器连接的网络。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+services:
+
+  some-service:
+    networks:
+     - some-network
+     - other-network
+
+networks:
+  some-network:
+  other-network:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;pid:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;pid&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;跟主机系统共享进程命名空间。打开该选项的容器之间，以及容器和宿主机系统之间可以通过进程 ID 来相互访问和操作。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;pid: &amp;quot;host&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;ports:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;ports&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;暴露端口信息。&lt;/p&gt;
+
+&lt;p&gt;使用宿主端口：容器端口 &lt;code&gt;(HOST:CONTAINER)&lt;/code&gt; 格式，或者仅仅指定容器的端口（宿主将会随机选择端口）都可以。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;ports:
+ - &amp;quot;3000&amp;quot;
+ - &amp;quot;8000:8000&amp;quot;
+ - &amp;quot;49100:22&amp;quot;
+ - &amp;quot;127.0.0.1:8001:8001&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;注意：当使用 &lt;code&gt;HOST:CONTAINER&lt;/code&gt; 格式来映射端口时，如果你使用的容器端口小于 60 并且没放到引号里，可能会得到错误结果，因为 &lt;code&gt;YAML&lt;/code&gt; 会自动解析 &lt;code&gt;xx:yy&lt;/code&gt; 这种数字格式为 60 进制。为避免出现这种问题，建议数字串都采用引号包括起来的字符串格式。&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;secrets:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;secrets&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;存储敏感数据，例如 &lt;code&gt;mysql&lt;/code&gt; 服务密码。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3.1&amp;quot;
+services:
+
+mysql:
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+  secrets:
+    - db_root_password
+    - my_other_secret
+
+secrets:
+  my_secret:
+    file: ./my_secret.txt
+  my_other_secret:
+    external: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;security-opt:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;security_opt&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定容器模板标签（label）机制的默认属性（用户、角色、类型、级别等）。例如配置标签的用户名和角色名。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;security_opt:
+    - label:user:USER
+    - label:role:ROLE
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;stop-signal:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;stop_signal&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;设置另一个信号来停止容器。在默认情况下使用的是 SIGTERM 停止容器。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;stop_signal: SIGUSR1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;sysctls:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;sysctls&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;配置容器内核参数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;sysctls:
+  net.core.somaxconn: 1024
+  net.ipv4.tcp_syncookies: 0
+
+sysctls:
+  - net.core.somaxconn=1024
+  - net.ipv4.tcp_syncookies=0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;ulimits:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;ulimits&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;指定容器的 ulimits 限制值。&lt;/p&gt;
+
+&lt;p&gt;例如，指定最大进程数为 65535，指定文件句柄数为 20000（软限制，应用可以随时修改，不能超过硬限制） 和 40000（系统硬限制，只能 root 用户提高）。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;  ulimits:
+    nproc: 65535
+    nofile:
+      soft: 20000
+      hard: 40000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;volumes:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;&lt;code&gt;volumes&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;数据卷所挂载路径设置。可以设置宿主机路径 （&lt;code&gt;HOST:CONTAINER&lt;/code&gt;） 或加上访问模式 （&lt;code&gt;HOST:CONTAINER:ro&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;该指令中路径支持相对路径。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;volumes:
+ - /var/lib/mysql
+ - cache/:/tmp/cache
+ - ~/configs:/etc/configs/:ro
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;其它指令:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;其它指令&lt;/h3&gt;
+
+&lt;p&gt;此外，还有包括 &lt;code&gt;domainname, entrypoint, hostname, ipc, mac_address, privileged, read_only, shm_size, restart, stdin_open, tty, user, working_dir&lt;/code&gt; 等指令，基本跟 &lt;code&gt;docker run&lt;/code&gt; 中对应参数的功能一致。&lt;/p&gt;
+
+&lt;p&gt;指定服务容器启动后执行的入口文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;entrypoint: /code/entrypoint.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;指定容器中运行应用的用户名。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;user: nginx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;指定容器中工作目录。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;working_dir: /code
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;指定容器中搜索域名、主机名、mac 地址等。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;domainname: your_website.com
+hostname: test
+mac_address: 08-00-27-00-0C-0A
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;允许容器中运行一些特权命令。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;privileged: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;指定容器退出后的重启策略为始终重启。该命令对保持服务始终运行十分有效，在生产环境中推荐配置为 &lt;code&gt;always&lt;/code&gt; 或者 &lt;code&gt;unless-stopped&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;restart: always
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以只读模式挂载容器的 root 文件系统，意味着不能对容器内容进行修改。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;read_only: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;打开标准输入，可以接受外部输入。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;stdin_open: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;模拟一个伪终端。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;tty: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;读取变量:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;读取变量&lt;/h3&gt;
+
+&lt;p&gt;Compose 模板文件支持动态读取主机的系统环境变量和当前目录下的 &lt;code&gt;.env&lt;/code&gt; 文件中的变量。&lt;/p&gt;
+
+&lt;p&gt;例如，下面的 Compose 文件将从运行它的环境中读取变量 &lt;code&gt;${MONGO_VERSION}&lt;/code&gt; 的值，并写入执行的指令中。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+services:
+
+db:
+  image: &amp;quot;mongo:${MONGO_VERSION}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果执行 &lt;code&gt;MONGO_VERSION=3.2 docker-compose up&lt;/code&gt; 则会启动一个 &lt;code&gt;mongo:3.2&lt;/code&gt; 镜像的容器；如果执行 &lt;code&gt;MONGO_VERSION=2.8 docker-compose up&lt;/code&gt; 则会启动一个 &lt;code&gt;mongo:2.8&lt;/code&gt; 镜像的容器。&lt;/p&gt;
+
+&lt;p&gt;若当前目录存在 &lt;code&gt;.env&lt;/code&gt; 文件，执行 &lt;code&gt;docker-compose&lt;/code&gt; 命令时将从该文件中读取变量。&lt;/p&gt;
+
+&lt;p&gt;在当前目录新建 &lt;code&gt;.env&lt;/code&gt; 文件并写入以下内容。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# 支持 # 号注释
+MONGO_VERSION=3.6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;执行 &lt;code&gt;docker-compose up&lt;/code&gt; 则会启动一个 &lt;code&gt;mongo:3.6&lt;/code&gt; 镜像的容器。&lt;/p&gt;
+
+&lt;h2 id=&#34;使用-django:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;使用 Django&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本小节内容适合 &lt;code&gt;Python&lt;/code&gt; 开发人员阅读。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我们现在将使用 &lt;code&gt;Docker Compose&lt;/code&gt; 配置并运行一个 &lt;code&gt;Django/PostgreSQL&lt;/code&gt; 应用。&lt;/p&gt;
+
+&lt;p&gt;在一切工作开始前，需要先编辑好三个必要的文件。&lt;/p&gt;
+
+&lt;p&gt;第一步，因为应用将要运行在一个满足所有环境依赖的 Docker 容器里面，那么我们可以通过编辑 &lt;code&gt;Dockerfile&lt;/code&gt; 文件来指定 Docker 容器要安装内容。内容如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dockerfile&#34;&gt;FROM python:3
+ENV PYTHONUNBUFFERED 1
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code/
+RUN pip install -r requirements.txt
+ADD . /code/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以上内容指定应用将使用安装了 Python 以及必要依赖包的镜像。更多关于如何编写 &lt;code&gt;Dockerfile&lt;/code&gt; 文件的信息可以查看 &lt;a href=&#34;../image/create.md#利用 Dockerfile 来创建镜像&#34;&gt;镜像创建&lt;/a&gt; 和 &lt;a href=&#34;../dockerfile/README.md&#34;&gt; Dockerfile 使用&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;第二步，在 &lt;code&gt;requirements.txt&lt;/code&gt; 文件里面写明需要安装的具体依赖包名。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Django&amp;gt;=1.8,&amp;lt;2.0
+psycopg2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;第三步，&lt;code&gt;docker-compose.yml&lt;/code&gt; 文件将把所有的东西关联起来。它描述了应用的构成（一个 web 服务和一个数据库）、使用的 Docker 镜像、镜像之间的连接、挂载到容器的卷，以及服务开放的端口。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+services:
+
+  db:
+    image: postgres
+
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - &amp;quot;8000:8000&amp;quot;
+    links:
+      - db
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;查看 &lt;a href=&#34;yml_ref.md&#34;&gt;&lt;code&gt;docker-compose.yml&lt;/code&gt; 章节&lt;/a&gt; 了解更多详细的工作机制。&lt;/p&gt;
+
+&lt;p&gt;现在我们就可以使用 &lt;code&gt;docker-compose run&lt;/code&gt; 命令启动一个 &lt;code&gt;Django&lt;/code&gt; 应用了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run web django-admin.py startproject django_example .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compose 会先使用 &lt;code&gt;Dockerfile&lt;/code&gt; 为 web 服务创建一个镜像，接着使用这个镜像在容器里运行 &lt;code&gt;django-admin.py startproject django_example&lt;/code&gt; 指令。&lt;/p&gt;
+
+&lt;p&gt;这将在当前目录生成一个 &lt;code&gt;Django&lt;/code&gt; 应用。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls
+Dockerfile       docker-compose.yml          django_example       manage.py       requirements.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果你的系统是 Linux,记得更改文件权限。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo chown -R $USER:$USER .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;首先，我们要为应用设置好数据库的连接信息。用以下内容替换 &lt;code&gt;django_example/settings.py&lt;/code&gt; 文件中 &lt;code&gt;DATABASES = ...&lt;/code&gt; 定义的节点内容。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;DATABASES = {
+    &#39;default&#39;: {
+        &#39;ENGINE&#39;: &#39;django.db.backends.postgresql&#39;,
+        &#39;NAME&#39;: &#39;postgres&#39;,
+        &#39;USER&#39;: &#39;postgres&#39;,
+        &#39;HOST&#39;: &#39;db&#39;,
+        &#39;PORT&#39;: 5432,
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这些信息是在 &lt;a href=&#34;https://hub.docker.com/_/postgres/&#34;&gt;postgres&lt;/a&gt; 镜像固定设置好的。然后，运行 &lt;code&gt;docker-compose up&lt;/code&gt; ：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose up
+
+django_db_1 is up-to-date
+Creating django_web_1 ...
+Creating django_web_1 ... done
+Attaching to django_db_1, django_web_1
+db_1   | The files belonging to this database system will be owned by user &amp;quot;postgres&amp;quot;.
+db_1   | This user must also own the server process.
+db_1   |
+db_1   | The database cluster will be initialized with locale &amp;quot;en_US.utf8&amp;quot;.
+db_1   | The default database encoding has accordingly been set to &amp;quot;UTF8&amp;quot;.
+db_1   | The default text search configuration will be set to &amp;quot;english&amp;quot;.
+
+web_1  | Performing system checks...
+web_1  |
+web_1  | System check identified no issues (0 silenced).
+web_1  |
+web_1  | November 23, 2017 - 06:21:19
+web_1  | Django version 1.11.7, using settings &#39;django_example.settings&#39;
+web_1  | Starting development server at http://0.0.0.0:8000/
+web_1  | Quit the server with CONTROL-C.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个 &lt;code&gt;Django&lt;/code&gt; 应用已经开始在你的 Docker 守护进程里监听着 &lt;code&gt;8000&lt;/code&gt; 端口了。打开 &lt;code&gt;127.0.0.1:8000&lt;/code&gt; 即可看到 &lt;code&gt;Django&lt;/code&gt; 欢迎页面。&lt;/p&gt;
+
+&lt;p&gt;你还可以在 Docker 上运行其它的管理命令，例如对于同步数据库结构这种事，在运行完 &lt;code&gt;docker-compose up&lt;/code&gt; 后，在另外一个终端进入文件夹运行以下命令即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run web python manage.py syncdb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;使用-rails:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;使用 Rails&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本小节内容适合 &lt;code&gt;Ruby&lt;/code&gt; 开发人员阅读。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我们现在将使用 &lt;code&gt;Compose&lt;/code&gt; 配置并运行一个 &lt;code&gt;Rails/PostgreSQL&lt;/code&gt; 应用。&lt;/p&gt;
+
+&lt;p&gt;在一切工作开始前，需要先设置好三个必要的文件。&lt;/p&gt;
+
+&lt;p&gt;首先，因为应用将要运行在一个满足所有环境依赖的 Docker 容器里面，那么我们可以通过编辑 &lt;code&gt;Dockerfile&lt;/code&gt; 文件来指定 Docker 容器要安装内容。内容如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dockerfile&#34;&gt;FROM ruby
+RUN apt-get update -qq &amp;amp;&amp;amp; apt-get install -y build-essential libpq-dev
+RUN mkdir /myapp
+WORKDIR /myapp
+ADD Gemfile /myapp/Gemfile
+RUN bundle install
+ADD . /myapp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以上内容指定应用将使用安装了 Ruby、Bundler 以及其依赖件的镜像。更多关于如何编写 Dockerfile 文件的信息可以查看 &lt;a href=&#34;../image/create.md#利用 Dockerfile 来创建镜像&#34;&gt;镜像创建&lt;/a&gt; 和 &lt;a href=&#34;../dockerfile/README.md&#34;&gt;Dockerfile 使用&lt;/a&gt;。
+下一步，我们需要一个引导加载 Rails 的文件 &lt;code&gt;Gemfile&lt;/code&gt; 。 等一会儿它还会被 &lt;code&gt;rails new&lt;/code&gt; 命令覆盖重写。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source &#39;https://rubygems.org&#39;
+gem &#39;rails&#39;, &#39;4.0.2&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后，&lt;code&gt;docker-compose.yml&lt;/code&gt; 文件才是最神奇的地方。 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件将把所有的东西关联起来。它描述了应用的构成（一个 web 服务和一个数据库）、每个镜像的来源（数据库运行在使用预定义的 PostgreSQL 镜像，web 应用侧将从本地目录创建）、镜像之间的连接，以及服务开放的端口。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+services:
+
+  db:
+    image: postgres
+    ports:
+      - &amp;quot;5432&amp;quot;
+
+  web:
+    build: .
+    command: bundle exec rackup -p 3000
+    volumes:
+      - .:/myapp
+    ports:
+      - &amp;quot;3000:3000&amp;quot;
+    links:
+      - db
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;所有文件就绪后，我们就可以通过使用 &lt;code&gt;docker-compose run&lt;/code&gt; 命令生成应用的骨架了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run web rails new . --force --database=postgresql --skip-bundle
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 会先使用 &lt;code&gt;Dockerfile&lt;/code&gt; 为 web 服务创建一个镜像，接着使用这个镜像在容器里运行 &lt;code&gt;rails new&lt;/code&gt; 和它之后的命令。一旦这个命令运行完后，应该就可以看一个崭新的应用已经生成了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls
+Dockerfile   app          docker-compose.yml      tmp
+Gemfile      bin          lib          vendor
+Gemfile.lock condocker-compose       log
+README.rdoc  condocker-compose.ru    public
+Rakefile     db           test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在新的 &lt;code&gt;Gemfile&lt;/code&gt; 文件去掉加载 &lt;code&gt;therubyracer&lt;/code&gt; 的行的注释，这样我们便可以使用 Javascript 运行环境：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;gem &#39;therubyracer&#39;, platforms: :ruby
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在我们已经有一个新的 &lt;code&gt;Gemfile&lt;/code&gt; 文件，需要再重新创建镜像。（这个会步骤会改变 Dockerfile 文件本身，所以需要重建一次）。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;应用现在就可以启动了，但配置还未完成。Rails 默认读取的数据库目标是 &lt;code&gt;localhost&lt;/code&gt; ，我们需要手动指定容器的 &lt;code&gt;db&lt;/code&gt; 。同样的，还需要把用户名修改成和 postgres 镜像预定的一致。
+打开最新生成的 &lt;code&gt;database.yml&lt;/code&gt; 文件。用以下内容替换：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;development: &amp;amp;default
+  adapter: postgresql
+  encoding: unicode
+  database: postgres
+  pool: 5
+  username: postgres
+  password:
+  host: db
+
+test:
+  &amp;lt;&amp;lt;: *default
+  database: myapp_test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在就可以启动应用了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose up
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果一切正常，你应该可以看到 PostgreSQL 的输出，几秒后可以看到这样的重复信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;myapp_web_1 | [2014-01-17 17:16:29] INFO  WEBrick 1.3.1
+myapp_web_1 | [2014-01-17 17:16:29] INFO  ruby 2.0.0 (2013-11-22) [x86_64-linux-gnu]
+myapp_web_1 | [2014-01-17 17:16:29] INFO  WEBrick::HTTPServer#start: pid=1 port=3000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后， 我们需要做的是创建数据库，打开另一个终端，运行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker-compose run web rake db:create
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个 web 应用已经开始在你的 docker 守护进程里面监听着 3000 端口了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../_images/docker-compose-rails-screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;使用-wordpress:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;使用 WordPress&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本小节内容适合 &lt;code&gt;PHP&lt;/code&gt; 开发人员阅读。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code&gt;Compose&lt;/code&gt; 可以很便捷的让 &lt;code&gt;Wordpress&lt;/code&gt; 运行在一个独立的环境中。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建空文件夹:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;创建空文件夹&lt;/h3&gt;
+
+&lt;p&gt;假设新建一个名为 &lt;code&gt;wordpress&lt;/code&gt; 的文件夹，然后进入这个文件夹。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建-docker-compose-yml-文件:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;创建 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/yeasy/docker_practice/blob/master/compose/demo/wordpress/docker-compose.yml&#34;&gt;&lt;code&gt;docker-compose.yml&lt;/code&gt;&lt;/a&gt; 文件将开启一个 &lt;code&gt;wordpress&lt;/code&gt; 服务和一个独立的 &lt;code&gt;MySQL&lt;/code&gt; 实例：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;version: &amp;quot;3&amp;quot;
+services:
+
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - &amp;quot;8000:80&amp;quot;
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+  db_data:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;构建并运行项目:e45b139cc9940b249d4f3ed1864fc2b3&#34;&gt;构建并运行项目&lt;/h3&gt;
+
+&lt;p&gt;运行 &lt;code&gt;docker-compose up -d&lt;/code&gt; Compose 就会拉取镜像再创建我们所需要的镜像，然后启动 &lt;code&gt;wordpress&lt;/code&gt; 和数据库容器。 接着浏览器访问 &lt;code&gt;127.0.0.1:8000&lt;/code&gt; 端口就能看到 &lt;code&gt;WordPress&lt;/code&gt; 安装界面了。&lt;/p&gt;
+
+&lt;p&gt;转至:&lt;a href=&#34;https://github.com/yeasy/docker_practice&#34;&gt;https://github.com/yeasy/docker_practice&lt;/a&gt;   d3c197ddfcc89aab5736b2a2eeb118f76e2588ba&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>dockerfile_best practices</title>
@@ -548,7 +1879,7 @@ root@2affd44b4667:/# history
       <guid>https://bibo19842003.github.io/docker/docker-contain/</guid>
       <description>
 
-&lt;h1 id=&#34;操作-docker-容器&#34;&gt;操作 Docker 容器&lt;/h1&gt;
+&lt;h1 id=&#34;操作-docker-容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;操作 Docker 容器&lt;/h1&gt;
 
 &lt;p&gt;容器是 Docker 又一核心概念。&lt;/p&gt;
 
@@ -556,13 +1887,13 @@ root@2affd44b4667:/# history
 
 &lt;p&gt;本章将具体介绍如何来管理一个容器，包括创建、启动和停止等。&lt;/p&gt;
 
-&lt;h2 id=&#34;启动容器&#34;&gt;启动容器&lt;/h2&gt;
+&lt;h2 id=&#34;启动容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动容器&lt;/h2&gt;
 
 &lt;p&gt;启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（&lt;code&gt;stopped&lt;/code&gt;）的容器重新启动。&lt;/p&gt;
 
 &lt;p&gt;因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。&lt;/p&gt;
 
-&lt;h3 id=&#34;新建并启动&#34;&gt;新建并启动&lt;/h3&gt;
+&lt;h3 id=&#34;新建并启动:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;新建并启动&lt;/h3&gt;
 
 &lt;p&gt;所需要的命令主要为 &lt;code&gt;docker run&lt;/code&gt;。&lt;/p&gt;
 
@@ -602,7 +1933,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 &lt;li&gt;执行完毕后容器被终止&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;启动已终止容器&#34;&gt;启动已终止容器&lt;/h3&gt;
+&lt;h3 id=&#34;启动已终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动已终止容器&lt;/h3&gt;
 
 &lt;p&gt;可以利用 &lt;code&gt;docker container start&lt;/code&gt; 命令，直接将一个已经终止的容器启动运行。&lt;/p&gt;
 
@@ -616,7 +1947,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 
 &lt;p&gt;可见，容器中仅运行了指定的 bash 应用。这种特点使得 Docker 对资源的利用率极高，是货真价实的轻量级虚拟化。&lt;/p&gt;
 
-&lt;h2 id=&#34;后台运行&#34;&gt;后台运行&lt;/h2&gt;
+&lt;h2 id=&#34;后台运行:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;后台运行&lt;/h2&gt;
 
 &lt;p&gt;更多的时候，需要让 Docker 在后台运行而不是直接把执行命令的结果输出在当前宿主机下。此时，可以通过添加 &lt;code&gt;-d&lt;/code&gt; 参数来实现。&lt;/p&gt;
 
@@ -659,7 +1990,7 @@ hello world
 . . .
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;终止容器&#34;&gt;终止容器&lt;/h2&gt;
+&lt;h2 id=&#34;终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;终止容器&lt;/h2&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker container stop&lt;/code&gt; 来终止一个运行中的容器。&lt;/p&gt;
 
@@ -679,13 +2010,13 @@ ba267838cc1b        ubuntu:18.04             &amp;quot;/bin/bash&amp;quot;      
 
 &lt;p&gt;此外，&lt;code&gt;docker container restart&lt;/code&gt; 命令会将一个运行态的容器终止，然后再重新启动它。&lt;/p&gt;
 
-&lt;h2 id=&#34;进入容器&#34;&gt;进入容器&lt;/h2&gt;
+&lt;h2 id=&#34;进入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;进入容器&lt;/h2&gt;
 
 &lt;p&gt;在使用 &lt;code&gt;-d&lt;/code&gt; 参数时，容器启动后会进入后台。&lt;/p&gt;
 
 &lt;p&gt;某些时候需要进入容器进行操作，包括使用 &lt;code&gt;docker attach&lt;/code&gt; 命令或 &lt;code&gt;docker exec&lt;/code&gt; 命令，推荐大家使用 &lt;code&gt;docker exec&lt;/code&gt; 命令，原因会在下面说明。&lt;/p&gt;
 
-&lt;h3 id=&#34;attach-命令&#34;&gt;&lt;code&gt;attach&lt;/code&gt; 命令&lt;/h3&gt;
+&lt;h3 id=&#34;attach-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;attach&lt;/code&gt; 命令&lt;/h3&gt;
 
 &lt;p&gt;下面示例如何使用 &lt;code&gt;docker attach&lt;/code&gt; 命令。&lt;/p&gt;
 
@@ -702,9 +2033,9 @@ root@243c32535da7:/#
 
 &lt;p&gt;&lt;em&gt;注意：&lt;/em&gt; 如果从这个 stdin 中 exit，会导致容器的停止。&lt;/p&gt;
 
-&lt;h3 id=&#34;exec-命令&#34;&gt;&lt;code&gt;exec&lt;/code&gt; 命令&lt;/h3&gt;
+&lt;h3 id=&#34;exec-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;exec&lt;/code&gt; 命令&lt;/h3&gt;
 
-&lt;h4 id=&#34;i-t-参数&#34;&gt;-i -t 参数&lt;/h4&gt;
+&lt;h4 id=&#34;i-t-参数:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;-i -t 参数&lt;/h4&gt;
 
 &lt;p&gt;&lt;code&gt;docker exec&lt;/code&gt; 后边可以跟多个参数，这里主要说明 &lt;code&gt;-i&lt;/code&gt; &lt;code&gt;-t&lt;/code&gt; 参数。&lt;/p&gt;
 
@@ -734,9 +2065,9 @@ root@69d137adef7a:/#
 
 &lt;p&gt;更多参数说明请使用 &lt;code&gt;docker exec --help&lt;/code&gt; 查看。&lt;/p&gt;
 
-&lt;h2 id=&#34;导出和导入容器&#34;&gt;导出和导入容器&lt;/h2&gt;
+&lt;h2 id=&#34;导出和导入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出和导入容器&lt;/h2&gt;
 
-&lt;h3 id=&#34;导出容器&#34;&gt;导出容器&lt;/h3&gt;
+&lt;h3 id=&#34;导出容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出容器&lt;/h3&gt;
 
 &lt;p&gt;如果要导出本地某个容器，可以使用 &lt;code&gt;docker export&lt;/code&gt; 命令。&lt;/p&gt;
 
@@ -748,7 +2079,7 @@ $ docker export 7691a814370e &amp;gt; ubuntu.tar
 
 &lt;p&gt;这样将导出容器快照到本地文件。&lt;/p&gt;
 
-&lt;h3 id=&#34;导入容器快照&#34;&gt;导入容器快照&lt;/h3&gt;
+&lt;h3 id=&#34;导入容器快照:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导入容器快照&lt;/h3&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker import&lt;/code&gt; 从容器快照文件中再导入为镜像，例如&lt;/p&gt;
 
@@ -765,7 +2096,7 @@ test/ubuntu         v1.0                9d37a6082e97        About a minute ago  
 
 &lt;p&gt;&lt;em&gt;注：用户既可以使用 &lt;code&gt;docker load&lt;/code&gt; 来导入镜像存储文件到本地镜像库，也可以使用 &lt;code&gt;docker import&lt;/code&gt; 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;删除容器&#34;&gt;删除容器&lt;/h2&gt;
+&lt;h2 id=&#34;删除容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;删除容器&lt;/h2&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker container rm&lt;/code&gt; 来删除一个处于终止状态的容器。例如&lt;/p&gt;
 
@@ -775,7 +2106,7 @@ trusting_newton
 
 &lt;p&gt;如果要删除一个运行中的容器，可以添加 &lt;code&gt;-f&lt;/code&gt; 参数。Docker 会发送 &lt;code&gt;SIGKILL&lt;/code&gt; 信号给容器。&lt;/p&gt;
 
-&lt;h2 id=&#34;清理所有处于终止状态的容器&#34;&gt;清理所有处于终止状态的容器&lt;/h2&gt;
+&lt;h2 id=&#34;清理所有处于终止状态的容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;清理所有处于终止状态的容器&lt;/h2&gt;
 
 &lt;p&gt;用 &lt;code&gt;docker container ls -a&lt;/code&gt; 命令可以查看所有已经创建的包括终止状态的容器，如果数量太多要一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器。&lt;/p&gt;
 
@@ -794,7 +2125,7 @@ trusting_newton
       <guid>https://bibo19842003.github.io/docker/docker-concept/</guid>
       <description>
 
-&lt;h1 id=&#34;基本概念:c1314578dde76a3a394a9042c269f756&#34;&gt;基本概念&lt;/h1&gt;
+&lt;h1 id=&#34;基本概念&#34;&gt;基本概念&lt;/h1&gt;
 
 &lt;p&gt;Docker 包括三个基本概念
 * 镜像（&lt;code&gt;Image&lt;/code&gt;）
@@ -803,13 +2134,13 @@ trusting_newton
 
 &lt;p&gt;理解了这三个概念，就理解了 Docker 的整个生命周期。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-镜像:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 镜像&lt;/h2&gt;
+&lt;h2 id=&#34;docker-镜像&#34;&gt;Docker 镜像&lt;/h2&gt;
 
 &lt;p&gt;我们都知道，操作系统分为内核和用户空间。对于 Linux 而言，内核启动后，会挂载 &lt;code&gt;root&lt;/code&gt; 文件系统为其提供用户空间支持。而 Docker 镜像（Image），就相当于是一个 &lt;code&gt;root&lt;/code&gt; 文件系统。比如官方镜像 &lt;code&gt;ubuntu:18.04&lt;/code&gt; 就包含了完整的一套 Ubuntu 18.04 最小系统的 &lt;code&gt;root&lt;/code&gt; 文件系统。&lt;/p&gt;
 
 &lt;p&gt;Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。&lt;/p&gt;
 
-&lt;h3 id=&#34;分层存储:c1314578dde76a3a394a9042c269f756&#34;&gt;分层存储&lt;/h3&gt;
+&lt;h3 id=&#34;分层存储&#34;&gt;分层存储&lt;/h3&gt;
 
 &lt;p&gt;因为镜像包含操作系统完整的 &lt;code&gt;root&lt;/code&gt; 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 &lt;a href=&#34;https://en.wikipedia.org/wiki/Union_mount&#34;&gt;Union FS&lt;/a&gt; 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。&lt;/p&gt;
 
@@ -819,7 +2150,7 @@ trusting_newton
 
 &lt;p&gt;关于镜像构建，将会在后续相关章节中做进一步的讲解。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-容器:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 容器&lt;/h2&gt;
+&lt;h2 id=&#34;docker-容器&#34;&gt;Docker 容器&lt;/h2&gt;
 
 &lt;p&gt;镜像（&lt;code&gt;Image&lt;/code&gt;）和容器（&lt;code&gt;Container&lt;/code&gt;）的关系，就像是面向对象程序设计中的 &lt;code&gt;类&lt;/code&gt; 和 &lt;code&gt;实例&lt;/code&gt; 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。&lt;/p&gt;
 
@@ -833,7 +2164,7 @@ trusting_newton
 
 &lt;p&gt;数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。&lt;/p&gt;
 
-&lt;h2 id=&#34;docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry&lt;/h2&gt;
+&lt;h2 id=&#34;docker-registry&#34;&gt;Docker Registry&lt;/h2&gt;
 
 &lt;p&gt;镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，&lt;a href=&#34;../repository/registry.md&#34;&gt;Docker Registry&lt;/a&gt; 就是这样的服务。&lt;/p&gt;
 
@@ -845,7 +2176,7 @@ trusting_newton
 
 &lt;p&gt;仓库名经常以 &lt;em&gt;两段式路径&lt;/em&gt; 形式出现，比如 &lt;code&gt;jwilder/nginx-proxy&lt;/code&gt;，前者往往意味着 Docker Registry 多用户环境下的用户名，后者则往往是对应的软件名。但这并非绝对，取决于所使用的具体 Docker Registry 的软件或服务。&lt;/p&gt;
 
-&lt;h3 id=&#34;docker-registry-公开服务:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry 公开服务&lt;/h3&gt;
+&lt;h3 id=&#34;docker-registry-公开服务&#34;&gt;Docker Registry 公开服务&lt;/h3&gt;
 
 &lt;p&gt;Docker Registry 公开服务是开放给用户使用、允许用户管理镜像的 Registry 服务。一般这类公开服务允许用户免费上传、下载公开的镜像，并可能提供收费服务供用户管理私有镜像。&lt;/p&gt;
 
@@ -855,7 +2186,7 @@ trusting_newton
 
 &lt;p&gt;国内也有一些云服务商提供类似于 Docker Hub 的公开服务。比如 &lt;a href=&#34;https://hub.tenxcloud.com/&#34;&gt;时速云镜像仓库&lt;/a&gt;、&lt;a href=&#34;https://c.163.com/hub#/m/library/&#34;&gt;网易云镜像服务&lt;/a&gt;、&lt;a href=&#34;https://hub.daocloud.io/&#34;&gt;DaoCloud 镜像市场&lt;/a&gt;、&lt;a href=&#34;https://cr.console.aliyun.com&#34;&gt;阿里云镜像库&lt;/a&gt; 等。&lt;/p&gt;
 
-&lt;h3 id=&#34;私有-docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;私有 Docker Registry&lt;/h3&gt;
+&lt;h3 id=&#34;私有-docker-registry&#34;&gt;私有 Docker Registry&lt;/h3&gt;
 
 &lt;p&gt;除了使用公开服务外，用户还可以在本地搭建私有 Docker Registry。Docker 官方提供了 &lt;a href=&#34;https://hub.docker.com/_/registry/&#34;&gt;Docker Registry&lt;/a&gt; 镜像，可以直接使用做为私有 Registry 服务。在 &lt;a href=&#34;../repository/registry.md&#34;&gt;私有仓库&lt;/a&gt; 一节中，会有进一步的搭建私有 Registry 服务的讲解。&lt;/p&gt;
 
@@ -863,23 +2194,23 @@ trusting_newton
 
 &lt;p&gt;除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，&lt;a href=&#34;https://github.com/goharbor/harbor&#34;&gt;Harbor&lt;/a&gt; 和 &lt;a href=&#34;../repository/nexus3_registry.md&#34;&gt;Sonatype Nexus&lt;/a&gt;。&lt;/p&gt;
 
-&lt;h2 id=&#34;为什么要使用-docker:c1314578dde76a3a394a9042c269f756&#34;&gt;为什么要使用 Docker？&lt;/h2&gt;
+&lt;h2 id=&#34;为什么要使用-docker&#34;&gt;为什么要使用 Docker？&lt;/h2&gt;
 
 &lt;p&gt;作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势。&lt;/p&gt;
 
-&lt;h3 id=&#34;更高效的利用系统资源:c1314578dde76a3a394a9042c269f756&#34;&gt;更高效的利用系统资源&lt;/h3&gt;
+&lt;h3 id=&#34;更高效的利用系统资源&#34;&gt;更高效的利用系统资源&lt;/h3&gt;
 
 &lt;p&gt;由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。&lt;/p&gt;
 
-&lt;h3 id=&#34;更快速的启动时间:c1314578dde76a3a394a9042c269f756&#34;&gt;更快速的启动时间&lt;/h3&gt;
+&lt;h3 id=&#34;更快速的启动时间&#34;&gt;更快速的启动时间&lt;/h3&gt;
 
 &lt;p&gt;传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。&lt;/p&gt;
 
-&lt;h3 id=&#34;一致的运行环境:c1314578dde76a3a394a9042c269f756&#34;&gt;一致的运行环境&lt;/h3&gt;
+&lt;h3 id=&#34;一致的运行环境&#34;&gt;一致的运行环境&lt;/h3&gt;
 
 &lt;p&gt;开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 &lt;em&gt;「这段代码在我机器上没问题啊」&lt;/em&gt; 这类问题。&lt;/p&gt;
 
-&lt;h3 id=&#34;持续交付和部署:c1314578dde76a3a394a9042c269f756&#34;&gt;持续交付和部署&lt;/h3&gt;
+&lt;h3 id=&#34;持续交付和部署&#34;&gt;持续交付和部署&lt;/h3&gt;
 
 &lt;p&gt;对开发和运维（&lt;a href=&#34;https://zh.wikipedia.org/wiki/DevOps&#34;&gt;DevOps&lt;/a&gt;）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。&lt;/p&gt;
 
@@ -887,15 +2218,15 @@ trusting_newton
 
 &lt;p&gt;而且使用 &lt;code&gt;Dockerfile&lt;/code&gt; 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;更轻松的迁移:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的迁移&lt;/h3&gt;
+&lt;h3 id=&#34;更轻松的迁移&#34;&gt;更轻松的迁移&lt;/h3&gt;
 
 &lt;p&gt;由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云，甚至是笔记本，其运行结果是一致的。因此用户可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况。&lt;/p&gt;
 
-&lt;h3 id=&#34;更轻松的维护和扩展:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的维护和扩展&lt;/h3&gt;
+&lt;h3 id=&#34;更轻松的维护和扩展&#34;&gt;更轻松的维护和扩展&lt;/h3&gt;
 
 &lt;p&gt;Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的 &lt;a href=&#34;https://hub.docker.com/search/?type=image&amp;amp;image_filter=official&#34;&gt;官方镜像&lt;/a&gt;，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。&lt;/p&gt;
 
-&lt;h3 id=&#34;对比传统虚拟机总结:c1314578dde76a3a394a9042c269f756&#34;&gt;对比传统虚拟机总结&lt;/h3&gt;
+&lt;h3 id=&#34;对比传统虚拟机总结&#34;&gt;对比传统虚拟机总结&lt;/h3&gt;
 
 &lt;table&gt;
 &lt;thead&gt;
@@ -945,7 +2276,7 @@ trusting_newton
       <guid>https://bibo19842003.github.io/docker/dockerfile/</guid>
       <description>
 
-&lt;h2 id=&#34;使用-dockerfile-定制镜像&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
+&lt;h2 id=&#34;使用-dockerfile-定制镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;使用 Dockerfile 定制镜像&lt;/h2&gt;
 
 &lt;p&gt;从刚才的 &lt;code&gt;docker commit&lt;/code&gt; 的学习中，我们可以了解到，镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。&lt;/p&gt;
 
@@ -968,7 +2299,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;这个 Dockerfile 很简单，一共就两行。涉及到了两条指令，&lt;code&gt;FROM&lt;/code&gt; 和 &lt;code&gt;RUN&lt;/code&gt;。&lt;/p&gt;
 
-&lt;h3 id=&#34;from-指定基础镜像&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
+&lt;h3 id=&#34;from-指定基础镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;FROM 指定基础镜像&lt;/h3&gt;
 
 &lt;p&gt;所谓定制镜像，那一定是以一个镜像为基础，在其上进行定制。就像我们之前运行了一个 &lt;code&gt;nginx&lt;/code&gt; 镜像的容器，再进行修改一样，基础镜像是必须指定的。而 &lt;code&gt;FROM&lt;/code&gt; 就是指定 &lt;strong&gt;基础镜像&lt;/strong&gt;，因此一个 &lt;code&gt;Dockerfile&lt;/code&gt; 中 &lt;code&gt;FROM&lt;/code&gt; 是必备的指令，并且必须是第一条指令。&lt;/p&gt;
 
@@ -986,7 +2317,7 @@ RUN echo &#39;&amp;lt;h1&amp;gt;Hello, Docker!&amp;lt;/h1&amp;gt;&#39; &amp;gt; 
 
 &lt;p&gt;不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，比如 &lt;a href=&#34;https://hub.docker.com/_/swarm/&#34;&gt;&lt;code&gt;swarm&lt;/code&gt;&lt;/a&gt;、&lt;a href=&#34;https://quay.io/repository/coreos/etcd&#34;&gt;&lt;code&gt;coreos/etcd&lt;/code&gt;&lt;/a&gt;。对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 &lt;code&gt;FROM scratch&lt;/code&gt; 会让镜像体积更加小巧。使用 &lt;a href=&#34;https://golang.org/&#34;&gt;Go 语言&lt;/a&gt; 开发的应用很多会使用这种方式来制作镜像，这也是为什么有人认为 Go 是特别适合容器微服务架构的语言的原因之一。&lt;/p&gt;
 
-&lt;h3 id=&#34;run-执行命令&#34;&gt;RUN 执行命令&lt;/h3&gt;
+&lt;h3 id=&#34;run-执行命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;RUN 执行命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;RUN&lt;/code&gt; 指令是用来执行命令行命令的。由于命令行的强大能力，&lt;code&gt;RUN&lt;/code&gt; 指令在定制镜像时是最常用的指令之一。其格式有两种：&lt;/p&gt;
 
@@ -1047,7 +2378,7 @@ RUN buildDeps=&#39;gcc libc6-dev make wget&#39; \
 
 &lt;p&gt;很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件。&lt;/p&gt;
 
-&lt;h3 id=&#34;构建镜像&#34;&gt;构建镜像&lt;/h3&gt;
+&lt;h3 id=&#34;构建镜像:13a98cce61a7c185eb25fd01e8410188&#34;&gt;构建镜像&lt;/h3&gt;
 
 &lt;p&gt;好了，让我们再回到之前定制的 nginx 镜像的 Dockerfile 来。现在我们明白了这个 Dockerfile 的内容，那么让我们来构建这个镜像吧。&lt;/p&gt;
 
@@ -1073,7 +2404,7 @@ Successfully built 44aa4490ce2c
 
 &lt;p&gt;在这里我们指定了最终镜像的名称 &lt;code&gt;-t nginx:v3&lt;/code&gt;，构建成功后，我们可以像之前运行 &lt;code&gt;nginx:v2&lt;/code&gt; 那样来运行这个镜像，其结果会和 &lt;code&gt;nginx:v2&lt;/code&gt; 一样。&lt;/p&gt;
 
-&lt;h3 id=&#34;镜像构建上下文-context&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
+&lt;h3 id=&#34;镜像构建上下文-context:13a98cce61a7c185eb25fd01e8410188&#34;&gt;镜像构建上下文（Context）&lt;/h3&gt;
 
 &lt;p&gt;如果注意，会看到 &lt;code&gt;docker build&lt;/code&gt; 命令最后有一个 &lt;code&gt;.&lt;/code&gt;。&lt;code&gt;.&lt;/code&gt; 表示当前目录，而 &lt;code&gt;Dockerfile&lt;/code&gt; 就在当前目录，因此不少初学者以为这个路径是在指定 &lt;code&gt;Dockerfile&lt;/code&gt; 所在路径，这么理解其实是不准确的。如果对应上面的命令格式，你可能会发现，这是在指定 &lt;strong&gt;上下文路径&lt;/strong&gt;。那么什么是上下文呢？&lt;/p&gt;
 
@@ -1111,9 +2442,9 @@ Sending build context to Docker daemon 2.048 kB
 
 &lt;p&gt;当然，一般大家习惯性的会使用默认的文件名 &lt;code&gt;Dockerfile&lt;/code&gt;，以及会将其置于镜像构建上下文目录中。&lt;/p&gt;
 
-&lt;h3 id=&#34;其它-docker-build-的用法&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
+&lt;h3 id=&#34;其它-docker-build-的用法:13a98cce61a7c185eb25fd01e8410188&#34;&gt;其它 &lt;code&gt;docker build&lt;/code&gt; 的用法&lt;/h3&gt;
 
-&lt;h4 id=&#34;直接用-git-repo-进行构建&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;直接用-git-repo-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;直接用 Git repo 进行构建&lt;/h4&gt;
 
 &lt;p&gt;或许你已经注意到了，&lt;code&gt;docker build&lt;/code&gt; 还支持从 URL 构建，比如可以直接从 Git repo 中构建：&lt;/p&gt;
 
@@ -1129,14 +2460,14 @@ aed15891ba52: Already exists
 
 &lt;p&gt;这行命令指定了构建所需的 Git repo，并且指定默认的 &lt;code&gt;master&lt;/code&gt; 分支，构建目录为 &lt;code&gt;/11.1/&lt;/code&gt;，然后 Docker 就会自己去 &lt;code&gt;git clone&lt;/code&gt; 这个项目、切换到指定分支、并进入到指定目录后开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;用给定的-tar-压缩包构建&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
+&lt;h4 id=&#34;用给定的-tar-压缩包构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;用给定的 tar 压缩包构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build http://server/context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果所给出的 URL 不是个 Git repo，而是个 &lt;code&gt;tar&lt;/code&gt; 压缩包，那么 Docker 引擎会下载这个包，并自动解压缩，以其作为上下文，开始构建。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取-dockerfile-进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取 Dockerfile 进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker build - &amp;lt; Dockerfile
 &lt;/code&gt;&lt;/pre&gt;
@@ -1148,18 +2479,18 @@ aed15891ba52: Already exists
 
 &lt;p&gt;如果标准输入传入的是文本文件，则将其视为 &lt;code&gt;Dockerfile&lt;/code&gt;，并开始构建。这种形式由于直接从标准输入中读取 Dockerfile 的内容，它没有上下文，因此不可以像其他方法那样可以将本地文件 &lt;code&gt;COPY&lt;/code&gt; 进镜像之类的事情。&lt;/p&gt;
 
-&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
+&lt;h4 id=&#34;从标准输入中读取上下文压缩包进行构建:13a98cce61a7c185eb25fd01e8410188&#34;&gt;从标准输入中读取上下文压缩包进行构建&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker build - &amp;lt; context.tar.gz
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如果发现标准输入的文件格式是 &lt;code&gt;gzip&lt;/code&gt;、&lt;code&gt;bzip2&lt;/code&gt; 以及 &lt;code&gt;xz&lt;/code&gt; 的话，将会使其为上下文压缩包，直接将其展开，将里面视为上下文，并开始构建。&lt;/p&gt;
 
-&lt;h2 id=&#34;dockerfile-指令详解&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
+&lt;h2 id=&#34;dockerfile-指令详解:13a98cce61a7c185eb25fd01e8410188&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
 
 &lt;p&gt;我们已经介绍了 &lt;code&gt;FROM&lt;/code&gt;，&lt;code&gt;RUN&lt;/code&gt;，还提及了 &lt;code&gt;COPY&lt;/code&gt;, &lt;code&gt;ADD&lt;/code&gt;，其实 &lt;code&gt;Dockerfile&lt;/code&gt; 功能很强大，它提供了十多个指令。下面我们继续讲解其他的指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;copy-复制文件&#34;&gt;COPY 复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;copy-复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;COPY 复制文件&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -1193,7 +2524,7 @@ COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;add-更高级的复制文件&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;add-更高级的复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ADD&lt;/code&gt; 指令和 &lt;code&gt;COPY&lt;/code&gt; 的格式和性质基本一致。但是在 &lt;code&gt;COPY&lt;/code&gt; 基础上增加了一些功能。&lt;/p&gt;
 
@@ -1224,7 +2555,7 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;cmd-容器启动命令&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
+&lt;h3 id=&#34;cmd-容器启动命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;CMD&lt;/code&gt; 指令的格式和 &lt;code&gt;RUN&lt;/code&gt; 相似，也是两种格式：&lt;/p&gt;
 
@@ -1272,7 +2603,7 @@ ADD --chown=10:11 files* /mydir/
 &lt;pre&gt;&lt;code class=&#34;language-Dockerfile&#34;&gt;CMD [&amp;quot;nginx&amp;quot;, &amp;quot;-g&amp;quot;, &amp;quot;daemon off;&amp;quot;]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;entrypoint-入口点&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
+&lt;h3 id=&#34;entrypoint-入口点:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt; 的格式和 &lt;code&gt;RUN&lt;/code&gt; 指令格式一样，分为 &lt;code&gt;exec&lt;/code&gt; 格式和 &lt;code&gt;shell&lt;/code&gt; 格式。&lt;/p&gt;
 
@@ -1285,7 +2616,7 @@ ADD --chown=10:11 files* /mydir/
 
 &lt;p&gt;那么有了 &lt;code&gt;CMD&lt;/code&gt; 后，为什么还要有 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 呢？这种 &lt;code&gt;&amp;lt;ENTRYPOINT&amp;gt; &amp;quot;&amp;lt;CMD&amp;gt;&amp;quot;&lt;/code&gt; 有什么好处么？让我们来看几个场景。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
+&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
 
 &lt;p&gt;假设我们需要一个得知自己当前公网 IP 的镜像，那么可以先用 &lt;code&gt;CMD&lt;/code&gt; 来实现：&lt;/p&gt;
 
@@ -1348,7 +2679,7 @@ Connection: keep-alive
 
 &lt;p&gt;可以看到，这次成功了。这是因为当存在 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 后，&lt;code&gt;CMD&lt;/code&gt; 的内容将会作为参数传给 &lt;code&gt;ENTRYPOINT&lt;/code&gt;，而这里 &lt;code&gt;-i&lt;/code&gt; 就是新的 &lt;code&gt;CMD&lt;/code&gt;，因此会作为参数传给 &lt;code&gt;curl&lt;/code&gt;，从而达到了我们预期的效果。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景二-应用运行前的准备工作&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
+&lt;h4 id=&#34;场景二-应用运行前的准备工作:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
 
 &lt;p&gt;启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作。&lt;/p&gt;
 
@@ -1387,7 +2718,7 @@ exec &amp;quot;$@&amp;quot;
 uid=0(root) gid=0(root) groups=0(root)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;env-设置环境变量&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
+&lt;h3 id=&#34;env-设置环境变量:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
 
 &lt;p&gt;格式有两种：&lt;/p&gt;
 
@@ -1423,7 +2754,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 &lt;code&gt;Dockerfile&lt;/code&gt; 制作更多的镜像，只需使用不同的环境变量即可。&lt;/p&gt;
 
-&lt;h3 id=&#34;arg-构建参数&#34;&gt;ARG 构建参数&lt;/h3&gt;
+&lt;h3 id=&#34;arg-构建参数:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ARG 构建参数&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ARG &amp;lt;参数名&amp;gt;[=&amp;lt;默认值&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -1433,7 +2764,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在 1.13 之前的版本，要求 &lt;code&gt;--build-arg&lt;/code&gt; 中的参数名，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中用 &lt;code&gt;ARG&lt;/code&gt; 定义过了，换句话说，就是 &lt;code&gt;--build-arg&lt;/code&gt; 指定的参数，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 &lt;code&gt;Dockerfile&lt;/code&gt; 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。&lt;/p&gt;
 
-&lt;h3 id=&#34;volume-定义匿名卷&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
+&lt;h3 id=&#34;volume-定义匿名卷:13a98cce61a7c185eb25fd01e8410188&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
 
 &lt;p&gt;格式为：&lt;/p&gt;
 
@@ -1454,7 +2785,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在这行命令中，就使用了 &lt;code&gt;mydata&lt;/code&gt; 这个命名卷挂载到了 &lt;code&gt;/data&lt;/code&gt; 这个位置，替代了 &lt;code&gt;Dockerfile&lt;/code&gt; 中定义的匿名卷的挂载配置。&lt;/p&gt;
 
-&lt;h3 id=&#34;expose-声明端口&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
+&lt;h3 id=&#34;expose-声明端口:13a98cce61a7c185eb25fd01e8410188&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;EXPOSE &amp;lt;端口1&amp;gt; [&amp;lt;端口2&amp;gt;...]&lt;/code&gt;。&lt;/p&gt;
 
@@ -1462,7 +2793,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;要将 &lt;code&gt;EXPOSE&lt;/code&gt; 和在运行时使用 &lt;code&gt;-p &amp;lt;宿主端口&amp;gt;:&amp;lt;容器端口&amp;gt;&lt;/code&gt; 区分开来。&lt;code&gt;-p&lt;/code&gt;，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 &lt;code&gt;EXPOSE&lt;/code&gt; 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。&lt;/p&gt;
 
-&lt;h3 id=&#34;workdir-指定工作目录&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
+&lt;h3 id=&#34;workdir-指定工作目录:13a98cce61a7c185eb25fd01e8410188&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;WORKDIR &amp;lt;工作目录路径&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -1480,7 +2811,7 @@ RUN echo &amp;quot;hello&amp;quot; &amp;gt; world.txt
 
 &lt;p&gt;因此如果需要改变以后各层的工作目录的位置，那么应该使用 &lt;code&gt;WORKDIR&lt;/code&gt; 指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;user-指定当前用户&#34;&gt;USER 指定当前用户&lt;/h3&gt;
+&lt;h3 id=&#34;user-指定当前用户:13a98cce61a7c185eb25fd01e8410188&#34;&gt;USER 指定当前用户&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;USER &amp;lt;用户名&amp;gt;[:&amp;lt;用户组&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -1505,7 +2836,7 @@ RUN wget -O /usr/local/bin/gosu &amp;quot;https://github.com/tianon/gosu/release
 CMD [ &amp;quot;exec&amp;quot;, &amp;quot;gosu&amp;quot;, &amp;quot;redis&amp;quot;, &amp;quot;redis-server&amp;quot; ]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;healthcheck-健康检查&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
+&lt;h3 id=&#34;healthcheck-健康检查:13a98cce61a7c185eb25fd01e8410188&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -1587,7 +2918,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;onbuild-为他人做嫁衣裳&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
+&lt;h3 id=&#34;onbuild-为他人做嫁衣裳:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ONBUILD &amp;lt;其它指令&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -1648,7 +2979,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 
 &lt;p&gt;是的，只有这么一行。当在各个项目目录中，用这个只有一行的 &lt;code&gt;Dockerfile&lt;/code&gt; 构建镜像时，之前基础镜像的那三行 &lt;code&gt;ONBUILD&lt;/code&gt; 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 &lt;code&gt;npm install&lt;/code&gt;，生成应用镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;参考文档&#34;&gt;参考文档&lt;/h3&gt;
+&lt;h3 id=&#34;参考文档:13a98cce61a7c185eb25fd01e8410188&#34;&gt;参考文档&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;code&gt;Dockerfie&lt;/code&gt; 官方文档：&lt;a href=&#34;https://docs.docker.com/engine/reference/builder/&#34;&gt;https://docs.docker.com/engine/reference/builder/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
