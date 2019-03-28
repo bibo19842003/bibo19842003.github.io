@@ -19,7 +19,7 @@
       <guid>https://bibo19842003.github.io/docker/docker-contain/</guid>
       <description>
 
-&lt;h1 id=&#34;操作-docker-容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;操作 Docker 容器&lt;/h1&gt;
+&lt;h1 id=&#34;操作-docker-容器&#34;&gt;操作 Docker 容器&lt;/h1&gt;
 
 &lt;p&gt;容器是 Docker 又一核心概念。&lt;/p&gt;
 
@@ -27,13 +27,13 @@
 
 &lt;p&gt;本章将具体介绍如何来管理一个容器，包括创建、启动和停止等。&lt;/p&gt;
 
-&lt;h2 id=&#34;启动容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动容器&lt;/h2&gt;
+&lt;h2 id=&#34;启动容器&#34;&gt;启动容器&lt;/h2&gt;
 
 &lt;p&gt;启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（&lt;code&gt;stopped&lt;/code&gt;）的容器重新启动。&lt;/p&gt;
 
 &lt;p&gt;因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。&lt;/p&gt;
 
-&lt;h3 id=&#34;新建并启动:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;新建并启动&lt;/h3&gt;
+&lt;h3 id=&#34;新建并启动&#34;&gt;新建并启动&lt;/h3&gt;
 
 &lt;p&gt;所需要的命令主要为 &lt;code&gt;docker run&lt;/code&gt;。&lt;/p&gt;
 
@@ -73,7 +73,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 &lt;li&gt;执行完毕后容器被终止&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;启动已终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;启动已终止容器&lt;/h3&gt;
+&lt;h3 id=&#34;启动已终止容器&#34;&gt;启动已终止容器&lt;/h3&gt;
 
 &lt;p&gt;可以利用 &lt;code&gt;docker container start&lt;/code&gt; 命令，直接将一个已经终止的容器启动运行。&lt;/p&gt;
 
@@ -87,7 +87,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 
 &lt;p&gt;可见，容器中仅运行了指定的 bash 应用。这种特点使得 Docker 对资源的利用率极高，是货真价实的轻量级虚拟化。&lt;/p&gt;
 
-&lt;h2 id=&#34;后台运行:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;后台运行&lt;/h2&gt;
+&lt;h2 id=&#34;后台运行&#34;&gt;后台运行&lt;/h2&gt;
 
 &lt;p&gt;更多的时候，需要让 Docker 在后台运行而不是直接把执行命令的结果输出在当前宿主机下。此时，可以通过添加 &lt;code&gt;-d&lt;/code&gt; 参数来实现。&lt;/p&gt;
 
@@ -130,7 +130,7 @@ hello world
 . . .
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;终止容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;终止容器&lt;/h2&gt;
+&lt;h2 id=&#34;终止容器&#34;&gt;终止容器&lt;/h2&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker container stop&lt;/code&gt; 来终止一个运行中的容器。&lt;/p&gt;
 
@@ -150,13 +150,13 @@ ba267838cc1b        ubuntu:18.04             &amp;quot;/bin/bash&amp;quot;      
 
 &lt;p&gt;此外，&lt;code&gt;docker container restart&lt;/code&gt; 命令会将一个运行态的容器终止，然后再重新启动它。&lt;/p&gt;
 
-&lt;h2 id=&#34;进入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;进入容器&lt;/h2&gt;
+&lt;h2 id=&#34;进入容器&#34;&gt;进入容器&lt;/h2&gt;
 
 &lt;p&gt;在使用 &lt;code&gt;-d&lt;/code&gt; 参数时，容器启动后会进入后台。&lt;/p&gt;
 
 &lt;p&gt;某些时候需要进入容器进行操作，包括使用 &lt;code&gt;docker attach&lt;/code&gt; 命令或 &lt;code&gt;docker exec&lt;/code&gt; 命令，推荐大家使用 &lt;code&gt;docker exec&lt;/code&gt; 命令，原因会在下面说明。&lt;/p&gt;
 
-&lt;h3 id=&#34;attach-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;attach&lt;/code&gt; 命令&lt;/h3&gt;
+&lt;h3 id=&#34;attach-命令&#34;&gt;&lt;code&gt;attach&lt;/code&gt; 命令&lt;/h3&gt;
 
 &lt;p&gt;下面示例如何使用 &lt;code&gt;docker attach&lt;/code&gt; 命令。&lt;/p&gt;
 
@@ -173,9 +173,9 @@ root@243c32535da7:/#
 
 &lt;p&gt;&lt;em&gt;注意：&lt;/em&gt; 如果从这个 stdin 中 exit，会导致容器的停止。&lt;/p&gt;
 
-&lt;h3 id=&#34;exec-命令:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;&lt;code&gt;exec&lt;/code&gt; 命令&lt;/h3&gt;
+&lt;h3 id=&#34;exec-命令&#34;&gt;&lt;code&gt;exec&lt;/code&gt; 命令&lt;/h3&gt;
 
-&lt;h4 id=&#34;i-t-参数:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;-i -t 参数&lt;/h4&gt;
+&lt;h4 id=&#34;i-t-参数&#34;&gt;-i -t 参数&lt;/h4&gt;
 
 &lt;p&gt;&lt;code&gt;docker exec&lt;/code&gt; 后边可以跟多个参数，这里主要说明 &lt;code&gt;-i&lt;/code&gt; &lt;code&gt;-t&lt;/code&gt; 参数。&lt;/p&gt;
 
@@ -205,9 +205,9 @@ root@69d137adef7a:/#
 
 &lt;p&gt;更多参数说明请使用 &lt;code&gt;docker exec --help&lt;/code&gt; 查看。&lt;/p&gt;
 
-&lt;h2 id=&#34;导出和导入容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出和导入容器&lt;/h2&gt;
+&lt;h2 id=&#34;导出和导入容器&#34;&gt;导出和导入容器&lt;/h2&gt;
 
-&lt;h3 id=&#34;导出容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导出容器&lt;/h3&gt;
+&lt;h3 id=&#34;导出容器&#34;&gt;导出容器&lt;/h3&gt;
 
 &lt;p&gt;如果要导出本地某个容器，可以使用 &lt;code&gt;docker export&lt;/code&gt; 命令。&lt;/p&gt;
 
@@ -219,7 +219,7 @@ $ docker export 7691a814370e &amp;gt; ubuntu.tar
 
 &lt;p&gt;这样将导出容器快照到本地文件。&lt;/p&gt;
 
-&lt;h3 id=&#34;导入容器快照:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;导入容器快照&lt;/h3&gt;
+&lt;h3 id=&#34;导入容器快照&#34;&gt;导入容器快照&lt;/h3&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker import&lt;/code&gt; 从容器快照文件中再导入为镜像，例如&lt;/p&gt;
 
@@ -236,7 +236,7 @@ test/ubuntu         v1.0                9d37a6082e97        About a minute ago  
 
 &lt;p&gt;&lt;em&gt;注：用户既可以使用 &lt;code&gt;docker load&lt;/code&gt; 来导入镜像存储文件到本地镜像库，也可以使用 &lt;code&gt;docker import&lt;/code&gt; 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;删除容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;删除容器&lt;/h2&gt;
+&lt;h2 id=&#34;删除容器&#34;&gt;删除容器&lt;/h2&gt;
 
 &lt;p&gt;可以使用 &lt;code&gt;docker container rm&lt;/code&gt; 来删除一个处于终止状态的容器。例如&lt;/p&gt;
 
@@ -246,7 +246,7 @@ trusting_newton
 
 &lt;p&gt;如果要删除一个运行中的容器，可以添加 &lt;code&gt;-f&lt;/code&gt; 参数。Docker 会发送 &lt;code&gt;SIGKILL&lt;/code&gt; 信号给容器。&lt;/p&gt;
 
-&lt;h2 id=&#34;清理所有处于终止状态的容器:e466c532c9bc814a929b5fabd2218e4e&#34;&gt;清理所有处于终止状态的容器&lt;/h2&gt;
+&lt;h2 id=&#34;清理所有处于终止状态的容器&#34;&gt;清理所有处于终止状态的容器&lt;/h2&gt;
 
 &lt;p&gt;用 &lt;code&gt;docker container ls -a&lt;/code&gt; 命令可以查看所有已经创建的包括终止状态的容器，如果数量太多要一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器。&lt;/p&gt;
 

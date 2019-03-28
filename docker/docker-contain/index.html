@@ -202,7 +202,7 @@
   <div class="container content">
   
 
-<h1 id="操作-docker-容器:e466c532c9bc814a929b5fabd2218e4e">操作 Docker 容器</h1>
+<h1 id="操作-docker-容器">操作 Docker 容器</h1>
 
 <p>容器是 Docker 又一核心概念。</p>
 
@@ -210,13 +210,13 @@
 
 <p>本章将具体介绍如何来管理一个容器，包括创建、启动和停止等。</p>
 
-<h2 id="启动容器:e466c532c9bc814a929b5fabd2218e4e">启动容器</h2>
+<h2 id="启动容器">启动容器</h2>
 
 <p>启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（<code>stopped</code>）的容器重新启动。</p>
 
 <p>因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。</p>
 
-<h3 id="新建并启动:e466c532c9bc814a929b5fabd2218e4e">新建并启动</h3>
+<h3 id="新建并启动">新建并启动</h3>
 
 <p>所需要的命令主要为 <code>docker run</code>。</p>
 
@@ -256,7 +256,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 <li>执行完毕后容器被终止</li>
 </ul>
 
-<h3 id="启动已终止容器:e466c532c9bc814a929b5fabd2218e4e">启动已终止容器</h3>
+<h3 id="启动已终止容器">启动已终止容器</h3>
 
 <p>可以利用 <code>docker container start</code> 命令，直接将一个已经终止的容器启动运行。</p>
 
@@ -270,7 +270,7 @@ bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr
 
 <p>可见，容器中仅运行了指定的 bash 应用。这种特点使得 Docker 对资源的利用率极高，是货真价实的轻量级虚拟化。</p>
 
-<h2 id="后台运行:e466c532c9bc814a929b5fabd2218e4e">后台运行</h2>
+<h2 id="后台运行">后台运行</h2>
 
 <p>更多的时候，需要让 Docker 在后台运行而不是直接把执行命令的结果输出在当前宿主机下。此时，可以通过添加 <code>-d</code> 参数来实现。</p>
 
@@ -313,7 +313,7 @@ hello world
 . . .
 </code></pre>
 
-<h2 id="终止容器:e466c532c9bc814a929b5fabd2218e4e">终止容器</h2>
+<h2 id="终止容器">终止容器</h2>
 
 <p>可以使用 <code>docker container stop</code> 来终止一个运行中的容器。</p>
 
@@ -333,13 +333,13 @@ ba267838cc1b        ubuntu:18.04             &quot;/bin/bash&quot;            30
 
 <p>此外，<code>docker container restart</code> 命令会将一个运行态的容器终止，然后再重新启动它。</p>
 
-<h2 id="进入容器:e466c532c9bc814a929b5fabd2218e4e">进入容器</h2>
+<h2 id="进入容器">进入容器</h2>
 
 <p>在使用 <code>-d</code> 参数时，容器启动后会进入后台。</p>
 
 <p>某些时候需要进入容器进行操作，包括使用 <code>docker attach</code> 命令或 <code>docker exec</code> 命令，推荐大家使用 <code>docker exec</code> 命令，原因会在下面说明。</p>
 
-<h3 id="attach-命令:e466c532c9bc814a929b5fabd2218e4e"><code>attach</code> 命令</h3>
+<h3 id="attach-命令"><code>attach</code> 命令</h3>
 
 <p>下面示例如何使用 <code>docker attach</code> 命令。</p>
 
@@ -356,9 +356,9 @@ root@243c32535da7:/#
 
 <p><em>注意：</em> 如果从这个 stdin 中 exit，会导致容器的停止。</p>
 
-<h3 id="exec-命令:e466c532c9bc814a929b5fabd2218e4e"><code>exec</code> 命令</h3>
+<h3 id="exec-命令"><code>exec</code> 命令</h3>
 
-<h4 id="i-t-参数:e466c532c9bc814a929b5fabd2218e4e">-i -t 参数</h4>
+<h4 id="i-t-参数">-i -t 参数</h4>
 
 <p><code>docker exec</code> 后边可以跟多个参数，这里主要说明 <code>-i</code> <code>-t</code> 参数。</p>
 
@@ -388,9 +388,9 @@ root@69d137adef7a:/#
 
 <p>更多参数说明请使用 <code>docker exec --help</code> 查看。</p>
 
-<h2 id="导出和导入容器:e466c532c9bc814a929b5fabd2218e4e">导出和导入容器</h2>
+<h2 id="导出和导入容器">导出和导入容器</h2>
 
-<h3 id="导出容器:e466c532c9bc814a929b5fabd2218e4e">导出容器</h3>
+<h3 id="导出容器">导出容器</h3>
 
 <p>如果要导出本地某个容器，可以使用 <code>docker export</code> 命令。</p>
 
@@ -402,7 +402,7 @@ $ docker export 7691a814370e &gt; ubuntu.tar
 
 <p>这样将导出容器快照到本地文件。</p>
 
-<h3 id="导入容器快照:e466c532c9bc814a929b5fabd2218e4e">导入容器快照</h3>
+<h3 id="导入容器快照">导入容器快照</h3>
 
 <p>可以使用 <code>docker import</code> 从容器快照文件中再导入为镜像，例如</p>
 
@@ -419,7 +419,7 @@ test/ubuntu         v1.0                9d37a6082e97        About a minute ago  
 
 <p><em>注：用户既可以使用 <code>docker load</code> 来导入镜像存储文件到本地镜像库，也可以使用 <code>docker import</code> 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。</em></p>
 
-<h2 id="删除容器:e466c532c9bc814a929b5fabd2218e4e">删除容器</h2>
+<h2 id="删除容器">删除容器</h2>
 
 <p>可以使用 <code>docker container rm</code> 来删除一个处于终止状态的容器。例如</p>
 
@@ -429,7 +429,7 @@ trusting_newton
 
 <p>如果要删除一个运行中的容器，可以添加 <code>-f</code> 参数。Docker 会发送 <code>SIGKILL</code> 信号给容器。</p>
 
-<h2 id="清理所有处于终止状态的容器:e466c532c9bc814a929b5fabd2218e4e">清理所有处于终止状态的容器</h2>
+<h2 id="清理所有处于终止状态的容器">清理所有处于终止状态的容器</h2>
 
 <p>用 <code>docker container ls -a</code> 命令可以查看所有已经创建的包括终止状态的容器，如果数量太多要一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器。</p>
 

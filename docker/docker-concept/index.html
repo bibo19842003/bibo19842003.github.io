@@ -202,7 +202,7 @@
   <div class="container content">
   
 
-<h1 id="基本概念">基本概念</h1>
+<h1 id="基本概念:c1314578dde76a3a394a9042c269f756">基本概念</h1>
 
 <p>Docker 包括三个基本概念
 * 镜像（<code>Image</code>）
@@ -211,13 +211,13 @@
 
 <p>理解了这三个概念，就理解了 Docker 的整个生命周期。</p>
 
-<h2 id="docker-镜像">Docker 镜像</h2>
+<h2 id="docker-镜像:c1314578dde76a3a394a9042c269f756">Docker 镜像</h2>
 
 <p>我们都知道，操作系统分为内核和用户空间。对于 Linux 而言，内核启动后，会挂载 <code>root</code> 文件系统为其提供用户空间支持。而 Docker 镜像（Image），就相当于是一个 <code>root</code> 文件系统。比如官方镜像 <code>ubuntu:18.04</code> 就包含了完整的一套 Ubuntu 18.04 最小系统的 <code>root</code> 文件系统。</p>
 
 <p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</p>
 
-<h3 id="分层存储">分层存储</h3>
+<h3 id="分层存储:c1314578dde76a3a394a9042c269f756">分层存储</h3>
 
 <p>因为镜像包含操作系统完整的 <code>root</code> 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 <a href="https://en.wikipedia.org/wiki/Union_mount">Union FS</a> 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。</p>
 
@@ -227,7 +227,7 @@
 
 <p>关于镜像构建，将会在后续相关章节中做进一步的讲解。</p>
 
-<h2 id="docker-容器">Docker 容器</h2>
+<h2 id="docker-容器:c1314578dde76a3a394a9042c269f756">Docker 容器</h2>
 
 <p>镜像（<code>Image</code>）和容器（<code>Container</code>）的关系，就像是面向对象程序设计中的 <code>类</code> 和 <code>实例</code> 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</p>
 
@@ -241,7 +241,7 @@
 
 <p>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。</p>
 
-<h2 id="docker-registry">Docker Registry</h2>
+<h2 id="docker-registry:c1314578dde76a3a394a9042c269f756">Docker Registry</h2>
 
 <p>镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，<a href="../repository/registry.md">Docker Registry</a> 就是这样的服务。</p>
 
@@ -253,7 +253,7 @@
 
 <p>仓库名经常以 <em>两段式路径</em> 形式出现，比如 <code>jwilder/nginx-proxy</code>，前者往往意味着 Docker Registry 多用户环境下的用户名，后者则往往是对应的软件名。但这并非绝对，取决于所使用的具体 Docker Registry 的软件或服务。</p>
 
-<h3 id="docker-registry-公开服务">Docker Registry 公开服务</h3>
+<h3 id="docker-registry-公开服务:c1314578dde76a3a394a9042c269f756">Docker Registry 公开服务</h3>
 
 <p>Docker Registry 公开服务是开放给用户使用、允许用户管理镜像的 Registry 服务。一般这类公开服务允许用户免费上传、下载公开的镜像，并可能提供收费服务供用户管理私有镜像。</p>
 
@@ -263,7 +263,7 @@
 
 <p>国内也有一些云服务商提供类似于 Docker Hub 的公开服务。比如 <a href="https://hub.tenxcloud.com/">时速云镜像仓库</a>、<a href="https://c.163.com/hub#/m/library/">网易云镜像服务</a>、<a href="https://hub.daocloud.io/">DaoCloud 镜像市场</a>、<a href="https://cr.console.aliyun.com">阿里云镜像库</a> 等。</p>
 
-<h3 id="私有-docker-registry">私有 Docker Registry</h3>
+<h3 id="私有-docker-registry:c1314578dde76a3a394a9042c269f756">私有 Docker Registry</h3>
 
 <p>除了使用公开服务外，用户还可以在本地搭建私有 Docker Registry。Docker 官方提供了 <a href="https://hub.docker.com/_/registry/">Docker Registry</a> 镜像，可以直接使用做为私有 Registry 服务。在 <a href="../repository/registry.md">私有仓库</a> 一节中，会有进一步的搭建私有 Registry 服务的讲解。</p>
 
@@ -271,23 +271,23 @@
 
 <p>除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，<a href="https://github.com/goharbor/harbor">Harbor</a> 和 <a href="../repository/nexus3_registry.md">Sonatype Nexus</a>。</p>
 
-<h2 id="为什么要使用-docker">为什么要使用 Docker？</h2>
+<h2 id="为什么要使用-docker:c1314578dde76a3a394a9042c269f756">为什么要使用 Docker？</h2>
 
 <p>作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势。</p>
 
-<h3 id="更高效的利用系统资源">更高效的利用系统资源</h3>
+<h3 id="更高效的利用系统资源:c1314578dde76a3a394a9042c269f756">更高效的利用系统资源</h3>
 
 <p>由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。</p>
 
-<h3 id="更快速的启动时间">更快速的启动时间</h3>
+<h3 id="更快速的启动时间:c1314578dde76a3a394a9042c269f756">更快速的启动时间</h3>
 
 <p>传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。</p>
 
-<h3 id="一致的运行环境">一致的运行环境</h3>
+<h3 id="一致的运行环境:c1314578dde76a3a394a9042c269f756">一致的运行环境</h3>
 
 <p>开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 <em>「这段代码在我机器上没问题啊」</em> 这类问题。</p>
 
-<h3 id="持续交付和部署">持续交付和部署</h3>
+<h3 id="持续交付和部署:c1314578dde76a3a394a9042c269f756">持续交付和部署</h3>
 
 <p>对开发和运维（<a href="https://zh.wikipedia.org/wiki/DevOps">DevOps</a>）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。</p>
 
@@ -295,15 +295,15 @@
 
 <p>而且使用 <code>Dockerfile</code> 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像。</p>
 
-<h3 id="更轻松的迁移">更轻松的迁移</h3>
+<h3 id="更轻松的迁移:c1314578dde76a3a394a9042c269f756">更轻松的迁移</h3>
 
 <p>由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云，甚至是笔记本，其运行结果是一致的。因此用户可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况。</p>
 
-<h3 id="更轻松的维护和扩展">更轻松的维护和扩展</h3>
+<h3 id="更轻松的维护和扩展:c1314578dde76a3a394a9042c269f756">更轻松的维护和扩展</h3>
 
 <p>Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的 <a href="https://hub.docker.com/search/?type=image&amp;image_filter=official">官方镜像</a>，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。</p>
 
-<h3 id="对比传统虚拟机总结">对比传统虚拟机总结</h3>
+<h3 id="对比传统虚拟机总结:c1314578dde76a3a394a9042c269f756">对比传统虚拟机总结</h3>
 
 <table>
 <thead>
