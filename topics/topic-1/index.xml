@@ -8,8 +8,159 @@
     <language>en-EN</language>
     <managingEditor>bibo19842003@163.com (bibo)</managingEditor>
     <webMaster>bibo19842003@163.com (bibo)</webMaster>
-    <lastBuildDate>Thu, 28 Mar 2019 09:02:21 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 28 Mar 2019 12:00:37 +0800</lastBuildDate>
     <atom:link href="https://bibo19842003.github.io/topics/topic-1/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>docker concept</title>
+      <link>https://bibo19842003.github.io/docker/docker-concept/</link>
+      <pubDate>Thu, 28 Mar 2019 12:00:37 +0800</pubDate>
+      <author>bibo19842003@163.com (bibo)</author>
+      <guid>https://bibo19842003.github.io/docker/docker-concept/</guid>
+      <description>
+
+&lt;h1 id=&#34;基本概念:c1314578dde76a3a394a9042c269f756&#34;&gt;基本概念&lt;/h1&gt;
+
+&lt;p&gt;Docker 包括三个基本概念
+* 镜像（&lt;code&gt;Image&lt;/code&gt;）
+* 容器（&lt;code&gt;Container&lt;/code&gt;）
+* 仓库（&lt;code&gt;Repository&lt;/code&gt;）&lt;/p&gt;
+
+&lt;p&gt;理解了这三个概念，就理解了 Docker 的整个生命周期。&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-镜像:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 镜像&lt;/h2&gt;
+
+&lt;p&gt;我们都知道，操作系统分为内核和用户空间。对于 Linux 而言，内核启动后，会挂载 &lt;code&gt;root&lt;/code&gt; 文件系统为其提供用户空间支持。而 Docker 镜像（Image），就相当于是一个 &lt;code&gt;root&lt;/code&gt; 文件系统。比如官方镜像 &lt;code&gt;ubuntu:18.04&lt;/code&gt; 就包含了完整的一套 Ubuntu 18.04 最小系统的 &lt;code&gt;root&lt;/code&gt; 文件系统。&lt;/p&gt;
+
+&lt;p&gt;Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。&lt;/p&gt;
+
+&lt;h3 id=&#34;分层存储:c1314578dde76a3a394a9042c269f756&#34;&gt;分层存储&lt;/h3&gt;
+
+&lt;p&gt;因为镜像包含操作系统完整的 &lt;code&gt;root&lt;/code&gt; 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 &lt;a href=&#34;https://en.wikipedia.org/wiki/Union_mount&#34;&gt;Union FS&lt;/a&gt; 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。&lt;/p&gt;
+
+&lt;p&gt;镜像构建时，会一层层构建，前一层是后一层的基础。每一层构建完就不会再发生改变，后一层上的任何改变只发生在自己这一层。比如，删除前一层文件的操作，实际不是真的删除前一层的文件，而是仅在当前层标记为该文件已删除。在最终容器运行的时候，虽然不会看到这个文件，但是实际上该文件会一直跟随镜像。因此，在构建镜像的时候，需要额外小心，每一层尽量只包含该层需要添加的东西，任何额外的东西应该在该层构建结束前清理掉。&lt;/p&gt;
+
+&lt;p&gt;分层存储的特征还使得镜像的复用、定制变的更为容易。甚至可以用之前构建好的镜像作为基础层，然后进一步添加新的层，以定制自己所需的内容，构建新的镜像。&lt;/p&gt;
+
+&lt;p&gt;关于镜像构建，将会在后续相关章节中做进一步的讲解。&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-容器:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker 容器&lt;/h2&gt;
+
+&lt;p&gt;镜像（&lt;code&gt;Image&lt;/code&gt;）和容器（&lt;code&gt;Container&lt;/code&gt;）的关系，就像是面向对象程序设计中的 &lt;code&gt;类&lt;/code&gt; 和 &lt;code&gt;实例&lt;/code&gt; 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。&lt;/p&gt;
+
+&lt;p&gt;容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 &lt;a href=&#34;https://en.wikipedia.org/wiki/Linux_namespaces&#34;&gt;命名空间&lt;/a&gt;。因此容器可以拥有自己的 &lt;code&gt;root&lt;/code&gt; 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。也因为这种隔离的特性，很多人初学 Docker 时常常会混淆容器和虚拟机。&lt;/p&gt;
+
+&lt;p&gt;前面讲过镜像使用的是分层存储，容器也是如此。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，我们可以称这个为容器运行时读写而准备的存储层为 &lt;strong&gt;容器存储层&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;容器存储层的生存周期和容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存于容器存储层的信息都会随容器删除而丢失。&lt;/p&gt;
+
+&lt;p&gt;按照 Docker 最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 &lt;a href=&#34;../data_management/volume.md&#34;&gt;数据卷（Volume）&lt;/a&gt;、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主（或网络存储）发生读写，其性能和稳定性更高。&lt;/p&gt;
+
+&lt;p&gt;数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry&lt;/h2&gt;
+
+&lt;p&gt;镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，&lt;a href=&#34;../repository/registry.md&#34;&gt;Docker Registry&lt;/a&gt; 就是这样的服务。&lt;/p&gt;
+
+&lt;p&gt;一个 &lt;strong&gt;Docker Registry&lt;/strong&gt; 中可以包含多个 &lt;strong&gt;仓库&lt;/strong&gt;（&lt;code&gt;Repository&lt;/code&gt;）；每个仓库可以包含多个 &lt;strong&gt;标签&lt;/strong&gt;（&lt;code&gt;Tag&lt;/code&gt;）；每个标签对应一个镜像。&lt;/p&gt;
+
+&lt;p&gt;通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;code&gt;&amp;lt;仓库名&amp;gt;:&amp;lt;标签&amp;gt;&lt;/code&gt; 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 &lt;code&gt;latest&lt;/code&gt; 作为默认标签。&lt;/p&gt;
+
+&lt;p&gt;以 &lt;a href=&#34;https://hub.docker.com/_/ubuntu&#34;&gt;Ubuntu 镜像&lt;/a&gt; 为例，&lt;code&gt;ubuntu&lt;/code&gt; 是仓库的名字，其内包含有不同的版本标签，如，&lt;code&gt;16.04&lt;/code&gt;, &lt;code&gt;18.04&lt;/code&gt;。我们可以通过 &lt;code&gt;ubuntu:14.04&lt;/code&gt;，或者 &lt;code&gt;ubuntu:18.04&lt;/code&gt; 来具体指定所需哪个版本的镜像。如果忽略了标签，比如 &lt;code&gt;ubuntu&lt;/code&gt;，那将视为 &lt;code&gt;ubuntu:latest&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;仓库名经常以 &lt;em&gt;两段式路径&lt;/em&gt; 形式出现，比如 &lt;code&gt;jwilder/nginx-proxy&lt;/code&gt;，前者往往意味着 Docker Registry 多用户环境下的用户名，后者则往往是对应的软件名。但这并非绝对，取决于所使用的具体 Docker Registry 的软件或服务。&lt;/p&gt;
+
+&lt;h3 id=&#34;docker-registry-公开服务:c1314578dde76a3a394a9042c269f756&#34;&gt;Docker Registry 公开服务&lt;/h3&gt;
+
+&lt;p&gt;Docker Registry 公开服务是开放给用户使用、允许用户管理镜像的 Registry 服务。一般这类公开服务允许用户免费上传、下载公开的镜像，并可能提供收费服务供用户管理私有镜像。&lt;/p&gt;
+
+&lt;p&gt;最常使用的 Registry 公开服务是官方的 &lt;a href=&#34;https://hub.docker.com/&#34;&gt;Docker Hub&lt;/a&gt;，这也是默认的 Registry，并拥有大量的高质量的官方镜像。除此以外，还有 &lt;a href=&#34;https://coreos.com/&#34;&gt;CoreOS&lt;/a&gt; 的 &lt;a href=&#34;https://quay.io/repository/&#34;&gt;Quay.io&lt;/a&gt;，CoreOS 相关的镜像存储在这里；Google 的 &lt;a href=&#34;https://cloud.google.com/container-registry/&#34;&gt;Google Container Registry&lt;/a&gt;，&lt;a href=&#34;https://kubernetes.io/&#34;&gt;Kubernetes&lt;/a&gt; 的镜像使用的就是这个服务。&lt;/p&gt;
+
+&lt;p&gt;由于某些原因，在国内访问这些服务可能会比较慢。国内的一些云服务商提供了针对 Docker Hub 的镜像服务（&lt;code&gt;Registry Mirror&lt;/code&gt;），这些镜像服务被称为&lt;strong&gt;加速器&lt;/strong&gt;。常见的有 &lt;a href=&#34;https://cr.console.aliyun.com/#/accelerator&#34;&gt;阿里云加速器&lt;/a&gt;、&lt;a href=&#34;https://www.daocloud.io/mirror#accelerator-doc&#34;&gt;DaoCloud 加速器&lt;/a&gt; 等。使用加速器会直接从国内的地址下载 Docker Hub 的镜像，比直接从 Docker Hub 下载速度会提高很多。在 &lt;a href=&#34;../install/mirror.md&#34;&gt;安装 Docker&lt;/a&gt;  一节中有详细的配置方法。&lt;/p&gt;
+
+&lt;p&gt;国内也有一些云服务商提供类似于 Docker Hub 的公开服务。比如 &lt;a href=&#34;https://hub.tenxcloud.com/&#34;&gt;时速云镜像仓库&lt;/a&gt;、&lt;a href=&#34;https://c.163.com/hub#/m/library/&#34;&gt;网易云镜像服务&lt;/a&gt;、&lt;a href=&#34;https://hub.daocloud.io/&#34;&gt;DaoCloud 镜像市场&lt;/a&gt;、&lt;a href=&#34;https://cr.console.aliyun.com&#34;&gt;阿里云镜像库&lt;/a&gt; 等。&lt;/p&gt;
+
+&lt;h3 id=&#34;私有-docker-registry:c1314578dde76a3a394a9042c269f756&#34;&gt;私有 Docker Registry&lt;/h3&gt;
+
+&lt;p&gt;除了使用公开服务外，用户还可以在本地搭建私有 Docker Registry。Docker 官方提供了 &lt;a href=&#34;https://hub.docker.com/_/registry/&#34;&gt;Docker Registry&lt;/a&gt; 镜像，可以直接使用做为私有 Registry 服务。在 &lt;a href=&#34;../repository/registry.md&#34;&gt;私有仓库&lt;/a&gt; 一节中，会有进一步的搭建私有 Registry 服务的讲解。&lt;/p&gt;
+
+&lt;p&gt;开源的 Docker Registry 镜像只提供了 &lt;a href=&#34;https://docs.docker.com/registry/spec/api/&#34;&gt;Docker Registry API&lt;/a&gt; 的服务端实现，足以支持 &lt;code&gt;docker&lt;/code&gt; 命令，不影响使用。但不包含图形界面，以及镜像维护、用户管理、访问控制等高级功能。在官方的商业化版本 &lt;a href=&#34;https://docs.docker.com/datacenter/dtr/2.0/&#34;&gt;Docker Trusted Registry&lt;/a&gt; 中，提供了这些高级功能。&lt;/p&gt;
+
+&lt;p&gt;除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，&lt;a href=&#34;https://github.com/goharbor/harbor&#34;&gt;Harbor&lt;/a&gt; 和 &lt;a href=&#34;../repository/nexus3_registry.md&#34;&gt;Sonatype Nexus&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;为什么要使用-docker:c1314578dde76a3a394a9042c269f756&#34;&gt;为什么要使用 Docker？&lt;/h2&gt;
+
+&lt;p&gt;作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势。&lt;/p&gt;
+
+&lt;h3 id=&#34;更高效的利用系统资源:c1314578dde76a3a394a9042c269f756&#34;&gt;更高效的利用系统资源&lt;/h3&gt;
+
+&lt;p&gt;由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。&lt;/p&gt;
+
+&lt;h3 id=&#34;更快速的启动时间:c1314578dde76a3a394a9042c269f756&#34;&gt;更快速的启动时间&lt;/h3&gt;
+
+&lt;p&gt;传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。&lt;/p&gt;
+
+&lt;h3 id=&#34;一致的运行环境:c1314578dde76a3a394a9042c269f756&#34;&gt;一致的运行环境&lt;/h3&gt;
+
+&lt;p&gt;开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 &lt;em&gt;「这段代码在我机器上没问题啊」&lt;/em&gt; 这类问题。&lt;/p&gt;
+
+&lt;h3 id=&#34;持续交付和部署:c1314578dde76a3a394a9042c269f756&#34;&gt;持续交付和部署&lt;/h3&gt;
+
+&lt;p&gt;对开发和运维（&lt;a href=&#34;https://zh.wikipedia.org/wiki/DevOps&#34;&gt;DevOps&lt;/a&gt;）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。&lt;/p&gt;
+
+&lt;p&gt;使用 Docker 可以通过定制应用镜像来实现持续集成、持续交付、部署。开发人员可以通过 &lt;a href=&#34;../image/dockerfile/&#34;&gt;Dockerfile&lt;/a&gt; 来进行镜像构建，并结合 &lt;a href=&#34;https://en.wikipedia.org/wiki/Continuous_integration&#34;&gt;持续集成(Continuous Integration)&lt;/a&gt; 系统进行集成测试，而运维人员则可以直接在生产环境中快速部署该镜像，甚至结合 &lt;a href=&#34;https://en.wikipedia.org/wiki/Continuous_delivery&#34;&gt;持续部署(Continuous Delivery/Deployment)&lt;/a&gt; 系统进行自动部署。&lt;/p&gt;
+
+&lt;p&gt;而且使用 &lt;code&gt;Dockerfile&lt;/code&gt; 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像。&lt;/p&gt;
+
+&lt;h3 id=&#34;更轻松的迁移:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的迁移&lt;/h3&gt;
+
+&lt;p&gt;由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云，甚至是笔记本，其运行结果是一致的。因此用户可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况。&lt;/p&gt;
+
+&lt;h3 id=&#34;更轻松的维护和扩展:c1314578dde76a3a394a9042c269f756&#34;&gt;更轻松的维护和扩展&lt;/h3&gt;
+
+&lt;p&gt;Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的 &lt;a href=&#34;https://hub.docker.com/search/?type=image&amp;amp;image_filter=official&#34;&gt;官方镜像&lt;/a&gt;，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。&lt;/p&gt;
+
+&lt;h3 id=&#34;对比传统虚拟机总结:c1314578dde76a3a394a9042c269f756&#34;&gt;对比传统虚拟机总结&lt;/h3&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;特性&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;容器&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;虚拟机&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;启动&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;秒级&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;分钟级&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;硬盘使用&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;一般为 &lt;code&gt;MB&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;一般为 &lt;code&gt;GB&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;性能&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;接近原生&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;弱于&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;系统支持量&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;单机支持上千个容器&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;一般几十个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;转至:&lt;a href=&#34;https://github.com/yeasy/docker_practice&#34;&gt;https://github.com/yeasy/docker_practice&lt;/a&gt;   d3c197ddfcc89aab5736b2a2eeb118f76e2588ba&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>dockerfile</title>
@@ -19,11 +170,11 @@
       <guid>https://bibo19842003.github.io/docker/dockerfile/</guid>
       <description>
 
-&lt;h2 id=&#34;dockerfile-指令详解:13a98cce61a7c185eb25fd01e8410188&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
+&lt;h2 id=&#34;dockerfile-指令详解&#34;&gt;Dockerfile 指令详解&lt;/h2&gt;
 
 &lt;p&gt;我们已经介绍了 &lt;code&gt;FROM&lt;/code&gt;，&lt;code&gt;RUN&lt;/code&gt;，还提及了 &lt;code&gt;COPY&lt;/code&gt;, &lt;code&gt;ADD&lt;/code&gt;，其实 &lt;code&gt;Dockerfile&lt;/code&gt; 功能很强大，它提供了十多个指令。下面我们继续讲解其他的指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;copy-复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;COPY 复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;copy-复制文件&#34;&gt;COPY 复制文件&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -57,7 +208,7 @@ COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;add-更高级的复制文件:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
+&lt;h3 id=&#34;add-更高级的复制文件&#34;&gt;ADD 更高级的复制文件&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ADD&lt;/code&gt; 指令和 &lt;code&gt;COPY&lt;/code&gt; 的格式和性质基本一致。但是在 &lt;code&gt;COPY&lt;/code&gt; 基础上增加了一些功能。&lt;/p&gt;
 
@@ -88,7 +239,7 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;cmd-容器启动命令:13a98cce61a7c185eb25fd01e8410188&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
+&lt;h3 id=&#34;cmd-容器启动命令&#34;&gt;CMD 容器启动命令&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;CMD&lt;/code&gt; 指令的格式和 &lt;code&gt;RUN&lt;/code&gt; 相似，也是两种格式：&lt;/p&gt;
 
@@ -136,7 +287,7 @@ ADD --chown=10:11 files* /mydir/
 &lt;pre&gt;&lt;code class=&#34;language-Dockerfile&#34;&gt;CMD [&amp;quot;nginx&amp;quot;, &amp;quot;-g&amp;quot;, &amp;quot;daemon off;&amp;quot;]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;entrypoint-入口点:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
+&lt;h3 id=&#34;entrypoint-入口点&#34;&gt;ENTRYPOINT 入口点&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt; 的格式和 &lt;code&gt;RUN&lt;/code&gt; 指令格式一样，分为 &lt;code&gt;exec&lt;/code&gt; 格式和 &lt;code&gt;shell&lt;/code&gt; 格式。&lt;/p&gt;
 
@@ -149,7 +300,7 @@ ADD --chown=10:11 files* /mydir/
 
 &lt;p&gt;那么有了 &lt;code&gt;CMD&lt;/code&gt; 后，为什么还要有 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 呢？这种 &lt;code&gt;&amp;lt;ENTRYPOINT&amp;gt; &amp;quot;&amp;lt;CMD&amp;gt;&amp;quot;&lt;/code&gt; 有什么好处么？让我们来看几个场景。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
+&lt;h4 id=&#34;场景一-让镜像变成像命令一样使用&#34;&gt;场景一：让镜像变成像命令一样使用&lt;/h4&gt;
 
 &lt;p&gt;假设我们需要一个得知自己当前公网 IP 的镜像，那么可以先用 &lt;code&gt;CMD&lt;/code&gt; 来实现：&lt;/p&gt;
 
@@ -212,7 +363,7 @@ Connection: keep-alive
 
 &lt;p&gt;可以看到，这次成功了。这是因为当存在 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 后，&lt;code&gt;CMD&lt;/code&gt; 的内容将会作为参数传给 &lt;code&gt;ENTRYPOINT&lt;/code&gt;，而这里 &lt;code&gt;-i&lt;/code&gt; 就是新的 &lt;code&gt;CMD&lt;/code&gt;，因此会作为参数传给 &lt;code&gt;curl&lt;/code&gt;，从而达到了我们预期的效果。&lt;/p&gt;
 
-&lt;h4 id=&#34;场景二-应用运行前的准备工作:13a98cce61a7c185eb25fd01e8410188&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
+&lt;h4 id=&#34;场景二-应用运行前的准备工作&#34;&gt;场景二：应用运行前的准备工作&lt;/h4&gt;
 
 &lt;p&gt;启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作。&lt;/p&gt;
 
@@ -251,7 +402,7 @@ exec &amp;quot;$@&amp;quot;
 uid=0(root) gid=0(root) groups=0(root)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;env-设置环境变量:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
+&lt;h3 id=&#34;env-设置环境变量&#34;&gt;ENV 设置环境变量&lt;/h3&gt;
 
 &lt;p&gt;格式有两种：&lt;/p&gt;
 
@@ -287,7 +438,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 &lt;code&gt;Dockerfile&lt;/code&gt; 制作更多的镜像，只需使用不同的环境变量即可。&lt;/p&gt;
 
-&lt;h3 id=&#34;arg-构建参数:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ARG 构建参数&lt;/h3&gt;
+&lt;h3 id=&#34;arg-构建参数&#34;&gt;ARG 构建参数&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ARG &amp;lt;参数名&amp;gt;[=&amp;lt;默认值&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -297,7 +448,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在 1.13 之前的版本，要求 &lt;code&gt;--build-arg&lt;/code&gt; 中的参数名，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中用 &lt;code&gt;ARG&lt;/code&gt; 定义过了，换句话说，就是 &lt;code&gt;--build-arg&lt;/code&gt; 指定的参数，必须在 &lt;code&gt;Dockerfile&lt;/code&gt; 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 &lt;code&gt;Dockerfile&lt;/code&gt; 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。&lt;/p&gt;
 
-&lt;h3 id=&#34;volume-定义匿名卷:13a98cce61a7c185eb25fd01e8410188&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
+&lt;h3 id=&#34;volume-定义匿名卷&#34;&gt;VOLUME 定义匿名卷&lt;/h3&gt;
 
 &lt;p&gt;格式为：&lt;/p&gt;
 
@@ -318,7 +469,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;在这行命令中，就使用了 &lt;code&gt;mydata&lt;/code&gt; 这个命名卷挂载到了 &lt;code&gt;/data&lt;/code&gt; 这个位置，替代了 &lt;code&gt;Dockerfile&lt;/code&gt; 中定义的匿名卷的挂载配置。&lt;/p&gt;
 
-&lt;h3 id=&#34;expose-声明端口:13a98cce61a7c185eb25fd01e8410188&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
+&lt;h3 id=&#34;expose-声明端口&#34;&gt;EXPOSE 声明端口&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;EXPOSE &amp;lt;端口1&amp;gt; [&amp;lt;端口2&amp;gt;...]&lt;/code&gt;。&lt;/p&gt;
 
@@ -326,7 +477,7 @@ RUN curl -SLO &amp;quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSI
 
 &lt;p&gt;要将 &lt;code&gt;EXPOSE&lt;/code&gt; 和在运行时使用 &lt;code&gt;-p &amp;lt;宿主端口&amp;gt;:&amp;lt;容器端口&amp;gt;&lt;/code&gt; 区分开来。&lt;code&gt;-p&lt;/code&gt;，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 &lt;code&gt;EXPOSE&lt;/code&gt; 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。&lt;/p&gt;
 
-&lt;h3 id=&#34;workdir-指定工作目录:13a98cce61a7c185eb25fd01e8410188&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
+&lt;h3 id=&#34;workdir-指定工作目录&#34;&gt;WORKDIR 指定工作目录&lt;/h3&gt;
 
 &lt;p&gt;格式为 &lt;code&gt;WORKDIR &amp;lt;工作目录路径&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -344,7 +495,7 @@ RUN echo &amp;quot;hello&amp;quot; &amp;gt; world.txt
 
 &lt;p&gt;因此如果需要改变以后各层的工作目录的位置，那么应该使用 &lt;code&gt;WORKDIR&lt;/code&gt; 指令。&lt;/p&gt;
 
-&lt;h3 id=&#34;user-指定当前用户:13a98cce61a7c185eb25fd01e8410188&#34;&gt;USER 指定当前用户&lt;/h3&gt;
+&lt;h3 id=&#34;user-指定当前用户&#34;&gt;USER 指定当前用户&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;USER &amp;lt;用户名&amp;gt;[:&amp;lt;用户组&amp;gt;]&lt;/code&gt;&lt;/p&gt;
 
@@ -369,7 +520,7 @@ RUN wget -O /usr/local/bin/gosu &amp;quot;https://github.com/tianon/gosu/release
 CMD [ &amp;quot;exec&amp;quot;, &amp;quot;gosu&amp;quot;, &amp;quot;redis&amp;quot;, &amp;quot;redis-server&amp;quot; ]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;healthcheck-健康检查:13a98cce61a7c185eb25fd01e8410188&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
+&lt;h3 id=&#34;healthcheck-健康检查&#34;&gt;HEALTHCHECK 健康检查&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;/p&gt;
 
@@ -451,7 +602,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;onbuild-为他人做嫁衣裳:13a98cce61a7c185eb25fd01e8410188&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
+&lt;h3 id=&#34;onbuild-为他人做嫁衣裳&#34;&gt;ONBUILD 为他人做嫁衣裳&lt;/h3&gt;
 
 &lt;p&gt;格式：&lt;code&gt;ONBUILD &amp;lt;其它指令&amp;gt;&lt;/code&gt;。&lt;/p&gt;
 
@@ -512,7 +663,7 @@ CMD [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]
 
 &lt;p&gt;是的，只有这么一行。当在各个项目目录中，用这个只有一行的 &lt;code&gt;Dockerfile&lt;/code&gt; 构建镜像时，之前基础镜像的那三行 &lt;code&gt;ONBUILD&lt;/code&gt; 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 &lt;code&gt;npm install&lt;/code&gt;，生成应用镜像。&lt;/p&gt;
 
-&lt;h3 id=&#34;参考文档:13a98cce61a7c185eb25fd01e8410188&#34;&gt;参考文档&lt;/h3&gt;
+&lt;h3 id=&#34;参考文档&#34;&gt;参考文档&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;code&gt;Dockerfie&lt;/code&gt; 官方文档：&lt;a href=&#34;https://docs.docker.com/engine/reference/builder/&#34;&gt;https://docs.docker.com/engine/reference/builder/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;

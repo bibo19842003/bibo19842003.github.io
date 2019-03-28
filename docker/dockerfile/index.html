@@ -206,11 +206,11 @@
   <div class="container content">
   
 
-<h2 id="dockerfile-指令详解:13a98cce61a7c185eb25fd01e8410188">Dockerfile 指令详解</h2>
+<h2 id="dockerfile-指令详解">Dockerfile 指令详解</h2>
 
 <p>我们已经介绍了 <code>FROM</code>，<code>RUN</code>，还提及了 <code>COPY</code>, <code>ADD</code>，其实 <code>Dockerfile</code> 功能很强大，它提供了十多个指令。下面我们继续讲解其他的指令。</p>
 
-<h3 id="copy-复制文件:13a98cce61a7c185eb25fd01e8410188">COPY 复制文件</h3>
+<h3 id="copy-复制文件">COPY 复制文件</h3>
 
 <p>格式：</p>
 
@@ -244,7 +244,7 @@ COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 </code></pre>
 
-<h3 id="add-更高级的复制文件:13a98cce61a7c185eb25fd01e8410188">ADD 更高级的复制文件</h3>
+<h3 id="add-更高级的复制文件">ADD 更高级的复制文件</h3>
 
 <p><code>ADD</code> 指令和 <code>COPY</code> 的格式和性质基本一致。但是在 <code>COPY</code> 基础上增加了一些功能。</p>
 
@@ -275,7 +275,7 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 </code></pre>
 
-<h3 id="cmd-容器启动命令:13a98cce61a7c185eb25fd01e8410188">CMD 容器启动命令</h3>
+<h3 id="cmd-容器启动命令">CMD 容器启动命令</h3>
 
 <p><code>CMD</code> 指令的格式和 <code>RUN</code> 相似，也是两种格式：</p>
 
@@ -323,7 +323,7 @@ ADD --chown=10:11 files* /mydir/
 <pre><code class="language-Dockerfile">CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
 </code></pre>
 
-<h3 id="entrypoint-入口点:13a98cce61a7c185eb25fd01e8410188">ENTRYPOINT 入口点</h3>
+<h3 id="entrypoint-入口点">ENTRYPOINT 入口点</h3>
 
 <p><code>ENTRYPOINT</code> 的格式和 <code>RUN</code> 指令格式一样，分为 <code>exec</code> 格式和 <code>shell</code> 格式。</p>
 
@@ -336,7 +336,7 @@ ADD --chown=10:11 files* /mydir/
 
 <p>那么有了 <code>CMD</code> 后，为什么还要有 <code>ENTRYPOINT</code> 呢？这种 <code>&lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;</code> 有什么好处么？让我们来看几个场景。</p>
 
-<h4 id="场景一-让镜像变成像命令一样使用:13a98cce61a7c185eb25fd01e8410188">场景一：让镜像变成像命令一样使用</h4>
+<h4 id="场景一-让镜像变成像命令一样使用">场景一：让镜像变成像命令一样使用</h4>
 
 <p>假设我们需要一个得知自己当前公网 IP 的镜像，那么可以先用 <code>CMD</code> 来实现：</p>
 
@@ -399,7 +399,7 @@ Connection: keep-alive
 
 <p>可以看到，这次成功了。这是因为当存在 <code>ENTRYPOINT</code> 后，<code>CMD</code> 的内容将会作为参数传给 <code>ENTRYPOINT</code>，而这里 <code>-i</code> 就是新的 <code>CMD</code>，因此会作为参数传给 <code>curl</code>，从而达到了我们预期的效果。</p>
 
-<h4 id="场景二-应用运行前的准备工作:13a98cce61a7c185eb25fd01e8410188">场景二：应用运行前的准备工作</h4>
+<h4 id="场景二-应用运行前的准备工作">场景二：应用运行前的准备工作</h4>
 
 <p>启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作。</p>
 
@@ -438,7 +438,7 @@ exec &quot;$@&quot;
 uid=0(root) gid=0(root) groups=0(root)
 </code></pre>
 
-<h3 id="env-设置环境变量:13a98cce61a7c185eb25fd01e8410188">ENV 设置环境变量</h3>
+<h3 id="env-设置环境变量">ENV 设置环境变量</h3>
 
 <p>格式有两种：</p>
 
@@ -474,7 +474,7 @@ RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-l
 
 <p>可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 <code>Dockerfile</code> 制作更多的镜像，只需使用不同的环境变量即可。</p>
 
-<h3 id="arg-构建参数:13a98cce61a7c185eb25fd01e8410188">ARG 构建参数</h3>
+<h3 id="arg-构建参数">ARG 构建参数</h3>
 
 <p>格式：<code>ARG &lt;参数名&gt;[=&lt;默认值&gt;]</code></p>
 
@@ -484,7 +484,7 @@ RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-l
 
 <p>在 1.13 之前的版本，要求 <code>--build-arg</code> 中的参数名，必须在 <code>Dockerfile</code> 中用 <code>ARG</code> 定义过了，换句话说，就是 <code>--build-arg</code> 指定的参数，必须在 <code>Dockerfile</code> 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 <code>Dockerfile</code> 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。</p>
 
-<h3 id="volume-定义匿名卷:13a98cce61a7c185eb25fd01e8410188">VOLUME 定义匿名卷</h3>
+<h3 id="volume-定义匿名卷">VOLUME 定义匿名卷</h3>
 
 <p>格式为：</p>
 
@@ -505,7 +505,7 @@ RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-l
 
 <p>在这行命令中，就使用了 <code>mydata</code> 这个命名卷挂载到了 <code>/data</code> 这个位置，替代了 <code>Dockerfile</code> 中定义的匿名卷的挂载配置。</p>
 
-<h3 id="expose-声明端口:13a98cce61a7c185eb25fd01e8410188">EXPOSE 声明端口</h3>
+<h3 id="expose-声明端口">EXPOSE 声明端口</h3>
 
 <p>格式为 <code>EXPOSE &lt;端口1&gt; [&lt;端口2&gt;...]</code>。</p>
 
@@ -513,7 +513,7 @@ RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-l
 
 <p>要将 <code>EXPOSE</code> 和在运行时使用 <code>-p &lt;宿主端口&gt;:&lt;容器端口&gt;</code> 区分开来。<code>-p</code>，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 <code>EXPOSE</code> 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。</p>
 
-<h3 id="workdir-指定工作目录:13a98cce61a7c185eb25fd01e8410188">WORKDIR 指定工作目录</h3>
+<h3 id="workdir-指定工作目录">WORKDIR 指定工作目录</h3>
 
 <p>格式为 <code>WORKDIR &lt;工作目录路径&gt;</code>。</p>
 
@@ -531,7 +531,7 @@ RUN echo &quot;hello&quot; &gt; world.txt
 
 <p>因此如果需要改变以后各层的工作目录的位置，那么应该使用 <code>WORKDIR</code> 指令。</p>
 
-<h3 id="user-指定当前用户:13a98cce61a7c185eb25fd01e8410188">USER 指定当前用户</h3>
+<h3 id="user-指定当前用户">USER 指定当前用户</h3>
 
 <p>格式：<code>USER &lt;用户名&gt;[:&lt;用户组&gt;]</code></p>
 
@@ -556,7 +556,7 @@ RUN wget -O /usr/local/bin/gosu &quot;https://github.com/tianon/gosu/releases/do
 CMD [ &quot;exec&quot;, &quot;gosu&quot;, &quot;redis&quot;, &quot;redis-server&quot; ]
 </code></pre>
 
-<h3 id="healthcheck-健康检查:13a98cce61a7c185eb25fd01e8410188">HEALTHCHECK 健康检查</h3>
+<h3 id="healthcheck-健康检查">HEALTHCHECK 健康检查</h3>
 
 <p>格式：</p>
 
@@ -638,7 +638,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 }
 </code></pre>
 
-<h3 id="onbuild-为他人做嫁衣裳:13a98cce61a7c185eb25fd01e8410188">ONBUILD 为他人做嫁衣裳</h3>
+<h3 id="onbuild-为他人做嫁衣裳">ONBUILD 为他人做嫁衣裳</h3>
 
 <p>格式：<code>ONBUILD &lt;其它指令&gt;</code>。</p>
 
@@ -699,7 +699,7 @@ CMD [ &quot;npm&quot;, &quot;start&quot; ]
 
 <p>是的，只有这么一行。当在各个项目目录中，用这个只有一行的 <code>Dockerfile</code> 构建镜像时，之前基础镜像的那三行 <code>ONBUILD</code> 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 <code>npm install</code>，生成应用镜像。</p>
 
-<h3 id="参考文档:13a98cce61a7c185eb25fd01e8410188">参考文档</h3>
+<h3 id="参考文档">参考文档</h3>
 
 <ul>
 <li><p><code>Dockerfie</code> 官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></p></li>
@@ -726,6 +726,10 @@ CMD [ &quot;npm&quot;, &quot;start&quot; ]
     </a>
     
 
+    
+    <a class="next" href="https://bibo19842003.github.io/docker/docker-concept/" title="docker concept">
+      Next
+    </a>
     
 
   
